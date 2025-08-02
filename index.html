@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brilliant AI Travel & Expedition</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            overflow: hidden; /* Prevent scrolling */
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            background-color: #191970; /* Dark Blue */
+            color: #F4F4F5; /* Off-white text */
+        }
+        .video-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+            filter: brightness(0.4);
+        }
+        .app-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            background-color: rgba(25, 25, 112, 0.7); /* Dark Blue with transparency */
+        }
+        .section {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.5s ease-in-out, visibility 0s 0.5s;
+        }
+        .section.active {
+            opacity: 1;
+            visibility: visible;
+            transition: opacity 0.5s ease-in-out;
+        }
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(25, 25, 112, 0.9);
+            backdrop-filter: blur(8px);
+            z-index: 50;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease-in-out, visibility 0s 0.3s;
+        }
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+            transition: opacity 0.3s ease-in-out;
+        }
+        .modal-content {
+            background-color: #F4ECE5; /* Cream */
+            color: #191970; /* Dark Blue text for contrast */
+            border-radius: 1rem;
+            padding: 2rem;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            transform: scale(0.9);
+            transition: transform 0.3s ease-in-out;
+        }
+        .modal-overlay.active .modal-content {
+            transform: scale(1);
+        }
+        .close-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 1.5rem;
+            color: #D4D4D4; /* Light gray */
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .close-btn:hover {
+            color: #FFFFFF;
+        }
+        
+        /* New animation for the subsection cards */
+        @keyframes flyIn {
+            from {
+                transform: scale(0.8) rotateX(45deg);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1) rotateX(0deg);
+                opacity: 1;
+            }
+        }
+        .animate-in {
+            animation: flyIn 0.8s ease-out forwards;
+        }
+        .card-bg {
+            background-color: #D4D4D4; /* Light gray */
+            color: #191970;
+        }
+        .carousel-container {
+            display: flex;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            scroll-snap-type: x mandatory;
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none;  /* Internet Explorer 10+ */
+            gap: 2rem;
+            padding-bottom: 1rem;
+        }
+        .carousel-container::-webkit-scrollbar {
+            display: none; /* Safari and Chrome */
+        }
+        .carousel-card {
+            flex-shrink: 0;
+            width: 80%; /* Adjust card width for carousel view */
+            scroll-snap-align: center;
+        }
+        @media (min-width: 768px) {
+            .carousel-card {
+                width: 45%;
+            }
+        }
+        @media (min-width: 1024px) {
+            .carousel-card {
+                width: 30%;
+            }
+        }
+        .itinerary-carousel-container {
+            display: flex;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            scroll-snap-type: x mandatory;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            gap: 2rem;
+            padding-bottom: 1rem;
+            max-width: 1000px;
+        }
+        .itinerary-carousel-container::-webkit-scrollbar {
+            display: none;
+        }
+        .itinerary-card {
+            flex-shrink: 0;
+            width: 90%;
+            scroll-snap-align: center;
+        }
+        @media (min-width: 768px) {
+            .itinerary-card {
+                width: 45%;
+            }
+        }
+    </style>
+</head>
+<body class="bg-[#191970] text-[#F4F4F5]">
+
+    <!-- Background Video -->
+    <video autoplay muted loop class="video-background">
+        <source src="https://player.vimeo.com/external/494639598.sd.mp4?s=34017f8a9a83d474586d5e11f7c3c08b8b8b5e9f&profile_id=164&oauth2_token=10214f48-038c-4860-915c-3f2d24a0d9e7" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+
+    <!-- Main App Container -->
+    <div class="app-container">
+
+        <!-- Header -->
+        <header class="absolute top-0 left-0 w-full p-6 flex justify-between items-center z-20">
+            <a href="#" onclick="goHome()" class="flex items-center space-x-2 cursor-pointer transition-colors duration-300 hover:text-[#D4D4D4]">
+                <!-- Replaced local image with a placeholder for GitHub Pages compatibility -->
+                <img src="https://github.com/BrilliantAITravel/PlanandTrip/blob/Images/White_logo%20(1).png" alt="Brilliant AI Logo" class="w-10 h-10 rounded-lg">
+                <div class="text-3xl font-extrabold text-[#00d0cd]">Brilliant AI</div>
+            </a>
+            <nav>
+                <ul class="flex space-x-6 font-semibold">
+                    <li><button onclick="showModal('about')" class="text-white hover:text-[#D4D4D4] transition-colors duration-300">About Us</button></li>
+                    <li><button onclick="showModal('contact')" class="text-white hover:text-[#D4D4D4] transition-colors duration-300">Contact Us</button></li>
+                </ul>
+            </nav>
+        </header>
+
+        <!-- Main Sections Screen -->
+        <section id="main-sections-screen" class="section active">
+            <div class="container mx-auto max-w-4xl text-center">
+                <h1 class="text-6xl md:text-8xl font-black text-white mb-4 drop-shadow-lg">
+                    Your Journey, Reimagined by AI
+                </h1>
+                <p class="text-xl md:text-2xl text-[#F4F4F5] max-w-3xl mx-auto drop-shadow-lg mb-16">
+                    Explore our hyper-personalized travel plans and itineraries.
+                </p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="bg-[#D4D4D4] text-[#191970] p-8 rounded-2xl shadow-xl transition-all duration-300 cursor-pointer hover:bg-[#F4ECE5]" onclick="showSubsections('family')">
+                        <h3 class="text-3xl font-bold mb-2">Family Travel</h3>
+                    </div>
+                    <div class="bg-[#D4D4D4] text-[#191970] p-8 rounded-2xl shadow-xl transition-all duration-300 cursor-pointer hover:bg-[#F4ECE5]" onclick="showSubsections('solo')">
+                        <h3 class="text-3xl font-bold mb-2">Solo Travel</h3>
+                    </div>
+                    <div class="bg-[#D4D4D4] text-[#191970] p-8 rounded-2xl shadow-all duration-300 cursor-pointer hover:bg-[#F4ECE5]" onclick="showSubsections('friends')">
+                        <h3 class="text-3xl font-bold mb-2">Travel with Friends</h3>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Subsections Screen -->
+        <section id="subsections-screen" class="section">
+            <div class="container mx-auto text-center pt-24">
+                <button onclick="goHome()" class="absolute top-12 left-6 text-[#00d0cd] text-2xl hover:text-white transition-colors duration-300 z-50">&larr; Back</button>
+                <h2 id="subsection-title" class="text-4xl md:text-5xl font-bold mb-12"></h2>
+                
+                <div class="relative w-full max-w-4xl overflow-hidden mx-auto">
+                    <div id="subsections-carousel-container" class="carousel-container">
+                        <!-- Subsection content will be dynamically loaded here -->
+                    </div>
+                    <button id="prev-sub-btn" class="absolute left-0 top-1/2 -translate-y-1/2 p-2 rounded-full text-white bg-black bg-opacity-50 hover:bg-opacity-75 transition-opacity duration-300 z-10">&lt;</button>
+                    <button id="next-sub-btn" class="absolute right-0 top-1/2 -translate-y-1/2 p-2 rounded-full text-white bg-black bg-opacity-50 hover:bg-opacity-75 transition-opacity duration-300 z-10">&gt;</button>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Itinerary Screen -->
+        <section id="itinerary-screen" class="section">
+            <div class="container mx-auto text-center pt-24">
+                <button onclick="showSubsections(selectedTravelType)" class="absolute top-12 left-6 text-[#00d0cd] text-2xl hover:text-white transition-colors duration-300 z-50">&larr; Back</button>
+                <h2 id="itinerary-title" class="text-4xl md:text-5xl font-bold mb-12"></h2>
+                
+                <div class="relative w-full max-w-4xl overflow-hidden mx-auto">
+                    <div id="itinerary-carousel-container" class="itinerary-carousel-container">
+                        <!-- Itinerary content will be dynamically loaded here -->
+                    </div>
+                    <button id="prev-itinerary-btn" class="absolute left-0 top-1/2 -translate-y-1/2 p-2 rounded-full text-white bg-black bg-opacity-50 hover:bg-opacity-75 transition-opacity duration-300 z-10">&lt;</button>
+                    <button id="next-itinerary-btn" class="absolute right-0 top-1/2 -translate-y-1/2 p-2 rounded-full text-white bg-black bg-opacity-50 hover:bg-opacity-75 transition-opacity duration-300 z-10">&gt;</button>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- About Us Modal -->
+    <div id="about-modal" class="modal-overlay">
+        <div class="modal-content">
+            <span class="close-btn" onclick="hideModal('about')">&times;</span>
+            <div class="space-y-10">
+                <h2 class="text-4xl md:text-5xl font-bold text-center">About Brilliant AI</h2>
+                <div class="space-y-6">
+                    <div>
+                        <h3 class="text-2xl font-bold text-[#00d0cd] mb-2">Introduction of the Company</h3>
+                        <p class="text-lg text-[#191970] leading-relaxed">
+                            Brilliant AI Travel & Expedition Pvt Ltd (Brilliant AI, hereafter), is positioned to redefine the global travel & tourism industry by bringing hyper-personalization and convenience to modern-day, tech-savvy travellers. It is a Private limited company, registered in Mainpuri, Uttar Pradesh & operated digitally with team members across India. Founded in December, 2024, Brilliant AI is currently building a team to create market presence and mature its products and services. Brilliant AI offers products and services for end-to-end travel management by building an ecosystem of intelligent, AI-driven digital products that cater to the evolving demands of modern travellers, offering personalized solutions across planning, experiencing, sharing, and even specialized events like weddings, all while prioritizing user satisfaction and leveraging advanced technology.
+                        </p>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-bold text-[#00d0cd] mb-2">Mission</h3>
+                        <p class="text-lg text-[#191970] leading-relaxed">
+                            To empower modern travellers and lifestyle planners with hyper-personalized, seamless, and secure digital experiences, transforming the way they plan, experience, and share their travel journeys and life events. Our purpose is to make complex travel and event planning effortless, enjoyable, and uniquely tailored to each individual, leveraging cutting-edge AI.
+                        </p>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-bold text-[#00d0cd] mb-2">Vision</h3>
+                        <p class="text-lg text-[#191970] leading-relaxed">
+                            To lead the future of hyper-personalized travel and lifestyle planning, creating a future where every journey and life event is effortlessly unique, deeply enriching, and perfectly tailored through intelligent technology. We aim to serve hundreds of millions of travellers, significantly grow our market share, and lead the development of sustainable tourism, leaving a lasting legacy in the travel world.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contact Us Modal -->
+    <div id="contact-modal" class="modal-overlay">
+        <div class="modal-content text-center">
+            <span class="close-btn" onclick="hideModal('contact')">&times;</span>
+            <h2 class="text-4xl md:text-5xl font-bold mb-8">Get In Touch</h2>
+            <p class="text-xl text-[#191970] mb-12">Connect with us on social media or reach out directly. We'd love to hear from you!</p>
+            <div class="flex justify-center space-x-8">
+                <div class="flex flex-col items-center">
+                    <a href="#" target="_blank" class="text-[#00d0cd] hover:text-white transition-colors duration-300">
+                        <img src="https://placehold.co/64x64/D4D4D4/191970?text=WA" alt="WhatsApp" class="w-16 h-16 rounded-lg">
+                    </a>
+                    <p class="mt-2 text-md font-semibold text-[#191970]">WhatsApp</p>
+                </div>
+                <div class="flex flex-col items-center">
+                    <a href="#" target="_blank" class="text-[#00d0cd] hover:text-white transition-colors duration-300">
+                        <img src="https://placehold.co/64x64/D4D4D4/191970?text=IG" alt="Instagram" class="w-16 h-16 rounded-lg">
+                    </a>
+                    <p class="mt-2 text-md font-semibold text-[#191970]">Instagram</p>
+                </div>
+                <div class="flex flex-col items-center">
+                    <a href="#" target="_blank" class="text-[#00d0cd] hover:text-white transition-colors duration-300">
+                        <img src="https://placehold.co/64x64/D4D4D4/191970?text=FB" alt="Facebook" class="w-16 h-16 rounded-lg">
+                    </a>
+                    <p class="mt-2 text-md font-semibold text-[#191970]">Facebook</p>
+                </div>
+                <div class="flex flex-col items-center">
+                    <a href="#" target="_blank" class="text-[#00d0cd] hover:text-white transition-colors duration-300">
+                        <img src="https://placehold.co/64x64/D4D4D4/191970?text=LI" alt="LinkedIn" class="w-16 h-16 rounded-lg">
+                    </a>
+                    <p class="mt-2 text-md font-semibold text-[#191970]">LinkedIn</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const subsectionsData = {
+            family: {
+                title: 'Family Travel Destinations',
+                sections: [
+                    { name: 'India', images: ['https://placehold.co/600x400/D4D4D4/191970', 'https://placehold.co/600x400/D4D4D4/191970'] },
+                    { name: 'South Asia', images: ['https://placehold.co/600x400/D4D4D4/191970', 'https://placehold.co/600x400/D4D4D4/191970'] },
+                    { name: 'Europe', images: ['https://placehold.co/600x400/D4D4D4/191970', 'https://placehold.co/600x400/D4D4D4/191970'] },
+                    { name: 'America', images: ['https://placehold.co/600x400/D4D4D4/191970', 'https://placehold.co/600x400/D4D4D4/191970'] },
+                    { name: 'Others', images: ['https://placehold.co/600x400/D4D4D4/191970', 'https://placehold.co/600x400/D4D4D4/191970'] }
+                ]
+            },
+            solo: {
+                title: 'Solo Travel Destinations',
+                sections: [
+                    { name: 'India', images: ['https://placehold.co/600x400/D4D4D4/191970', 'https://placehold.co/600x400/D4D4D4/191970'] },
+                    { name: 'South Asia', images: ['https://placehold.co/600x400/D4D4D4/191970', 'https://placehold.co/600x400/D4D4D4/191970'] },
+                    { name: 'Europe', images: ['https://placehold.co/600x400/D4D4D4/191970', 'https://placehold.co/600x400/D4D4D4/191970'] },
+                    { name: 'America', images: ['https://placehold.co/600x400/D4D4D4/191970', 'https://placehold.co/600x400/D4D4D4/191970'] },
+                    { name: 'Others', images: ['https://placehold.co/600x400/D4D4D4/191970', 'https://placehold.co/600x400/D4D4D4/191970'] }
+                ]
+            },
+            friends: {
+                title: 'Friends Travel Destinations',
+                sections: [
+                    { name: 'India', images: ['https://placehold.co/600x400/D4D4D4/191970', 'https://placehold.co/600x400/D4D4D4/191970'] },
+                    { name: 'South Asia', images: ['https://placehold.co/600x400/D4D4D4/191970', 'https://placehold.co/600x400/D4D4D4/191970'] },
+                    { name: 'Europe', images: ['https://placehold.co/600x400/D4D4D4/191970', 'https://placehold.co/600x400/D4D4D4/191970'] },
+                    { name: 'America', images: ['https://placehold.co/600x400/D4D4D4/191970', 'https://placehold.co/600x400/D4D4D4/191970'] },
+                    { name: 'Others', images: ['https://placehold.co/600x400/D4D4D4/191970', 'https://placehold.co/600x400/D4D4D4/191970'] }
+                ]
+            }
+        };
+
+        // Global variables to store selected travel details
+        let selectedTravelType = '';
+        let selectedDestination = '';
+
+        function goHome() {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.getElementById('main-sections-screen').classList.add('active');
+        }
+        
+        function showSubsections(travelType) {
+            selectedTravelType = travelType;
+            const mainScreen = document.getElementById('main-sections-screen');
+            const subScreen = document.getElementById('subsections-screen');
+            const itineraryScreen = document.getElementById('itinerary-screen');
+            const subsectionTitle = document.getElementById('subsection-title');
+            
+            mainScreen.classList.remove('active');
+            itineraryScreen.classList.remove('active'); // Fix for the back button glitch
+            
+            subsectionTitle.textContent = subsectionsData[travelType].title;
+            
+            let subsectionsHtml = '';
+            subsectionsData[travelType].sections.forEach((section, index) => {
+                subsectionsHtml += `
+                    <div class="carousel-card card-bg p-6 rounded-xl shadow-lg animate-in" style="animation-delay: ${index * 0.15}s;">
+                        <h3 class="text-2xl font-bold mb-4 text-[#191970]">${section.name}</h3>
+                        <div class="carousel-img-container relative overflow-hidden w-full h-48 rounded-lg mb-4">
+                            <img src="${section.images[0]}" class="carousel-item absolute w-full h-full object-cover transition-opacity duration-500 opacity-100" alt="Destination Image">
+                            <img src="${section.images[1]}" class="carousel-item absolute w-full h-full object-cover transition-opacity duration-500 opacity-0" alt="Destination Image">
+                        </div>
+                        <div class="flex justify-center items-center">
+                            <button onclick="showItinerary('${section.name}')" class="px-4 py-2 bg-[#00d0cd] text-white font-bold rounded-lg hover:bg-opacity-80 transition-colors duration-300">View Itineraries</button>
+                        </div>
+                    </div>
+                    <!-- card-separator -->
+                `;
+            });
+            
+            const carouselContainer = document.getElementById('subsections-carousel-container');
+            carouselContainer.innerHTML = '';
+            subsectionsHtml.split('<!-- card-separator -->').forEach((htmlContent) => {
+                if (htmlContent.trim()) {
+                    const tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = htmlContent;
+                    carouselContainer.appendChild(tempDiv.firstElementChild);
+                }
+            });
+
+            setTimeout(() => {
+                subScreen.classList.add('active');
+                initSubCarousel(); // Initialize the carousel functionality
+            }, 500); // Animation delay
+        }
+
+        function showItinerary(destination) {
+            selectedDestination = destination;
+            const subScreen = document.getElementById('subsections-screen');
+            const itineraryScreen = document.getElementById('itinerary-screen');
+            
+            subScreen.classList.remove('active');
+
+            const itineraryTitle = document.getElementById('itinerary-title');
+            itineraryTitle.textContent = `Your Trip to ${destination}`;
+
+            // Generate placeholder itinerary content dynamically
+            const itineraryCarousel = document.getElementById('itinerary-carousel-container');
+            itineraryCarousel.innerHTML = ''; // Clear previous content
+            for (let i = 1; i <= 5; i++) {
+                const card = document.createElement('div');
+                card.className = 'itinerary-card card-bg p-6 rounded-xl shadow-lg flex flex-col items-center';
+                card.innerHTML = `
+                    <div class="w-full h-48 rounded-lg overflow-hidden mb-4">
+                        <img src="https://placehold.co/600x400/D4D4D4/191970?text=Image+${i}" class="w-full h-full object-cover" alt="Itinerary Placeholder Image ${i}">
+                    </div>
+                    <p class="text-xl font-bold text-center text-[#191970] mt-2">Placeholder Itinerary Day ${i}</p>
+                    <p class="text-lg text-center text-[#191970] mt-1">This is a description for Day ${i} of your trip.</p>
+                `;
+                itineraryCarousel.appendChild(card);
+            }
+            
+            setTimeout(() => {
+                itineraryScreen.classList.add('active');
+                initItineraryCarousel(); // Initialize the new carousel
+            }, 500);
+        }
+
+        function showModal(modalId) {
+            document.getElementById(`${modalId}-modal`).classList.add('active');
+        }
+
+        function hideModal(modalId) {
+            document.getElementById(`${modalId}-modal`).classList.remove('active');
+        }
+
+        // Carousel Logic
+        function initSubCarousel() {
+            const container = document.getElementById('subsections-carousel-container');
+            const nextBtn = document.getElementById('next-sub-btn');
+            const prevBtn = document.getElementById('prev-sub-btn');
+            const firstCard = container.querySelector('.carousel-card');
+
+            if (!firstCard) return;
+
+            const cardWidth = firstCard.offsetWidth;
+            const gap = parseFloat(getComputedStyle(container).gap);
+            const scrollAmount = cardWidth + gap;
+            
+            nextBtn.onclick = () => {
+                const maxScrollLeft = container.scrollWidth - container.clientWidth;
+                if (container.scrollLeft + scrollAmount >= maxScrollLeft) {
+                    container.scrollLeft = 0; // Loop to the beginning
+                } else {
+                    container.scrollLeft += scrollAmount;
+                }
+            };
+
+            prevBtn.onclick = () => {
+                const maxScrollLeft = container.scrollWidth - container.clientWidth;
+                if (container.scrollLeft - scrollAmount <= 0) {
+                    container.scrollLeft = maxScrollLeft; // Loop to the end
+                } else {
+                    container.scrollLeft -= scrollAmount;
+                }
+            };
+        }
+
+        function initItineraryCarousel() {
+            const container = document.getElementById('itinerary-carousel-container');
+            const nextBtn = document.getElementById('next-itinerary-btn');
+            const prevBtn = document.getElementById('prev-itinerary-btn');
+            const firstCard = container.querySelector('.itinerary-card');
+
+            if (!firstCard) return;
+            
+            const cardWidth = firstCard.offsetWidth;
+            const gap = parseFloat(getComputedStyle(container).gap);
+            const scrollAmount = cardWidth + gap;
+            
+            nextBtn.onclick = () => {
+                const maxScrollLeft = container.scrollWidth - container.clientWidth;
+                if (container.scrollLeft + scrollAmount >= maxScrollLeft) {
+                    container.scrollLeft = 0; // Loop to the beginning
+                } else {
+                    container.scrollLeft += scrollAmount;
+                }
+            };
+            
+            prevBtn.onclick = () => {
+                const maxScrollLeft = container.scrollWidth - container.clientWidth;
+                if (container.scrollLeft - scrollAmount <= 0) {
+                    container.scrollLeft = maxScrollLeft; // Loop to the end
+                } else {
+                    container.scrollLeft -= scrollAmount;
+                }
+            };
+        }
+
+        window.onload = function() {
+            // The carousel logic is now initialized when the sections are activated
+        };
+    </script>
+</body>
+</html>
