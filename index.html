@@ -3,73 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Brilliant AI Travel & Expedition</title>
+    <title>Brilliant AI Travel & Expedition Website v3.1</title>
+    <!-- Tailwind CSS for styling -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" xintegrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ99+H14l0qB6C3F7b4a2s+3tYyN1q5w6iJq5h5e2d6bF6bJj9J2j+3d6a2k9A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Google Fonts for the 'Inter' typeface -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --primary-bg: #191970; /* Dark Blue (40%) */
-            --secondary-bg: #F4F4F5; /* Light Gray (25%) */
-            --accent-color: #00d0cd; /* Turquoise (15%) */
-            --text-light: #F4ECE5; /* Off-White (10%) */
-            --text-muted: #D4D4D4; /* Light Gray (5%) */
-            --text-white: #FFFFFF; /* White (5%) */
-        }
-
         body {
             font-family: 'Inter', sans-serif;
-            background-color: var(--primary-bg);
-            color: var(--text-white);
-            overflow: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
-        .fixed-screen-container {
-            height: 100vh;
-            width: 100vw;
-            display: flex;
-            flex-direction: column;
-            position: relative;
+        /* Custom animation keyframes for a smoother feel */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
-
-        .background-video {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            z-index: -1;
-        }
-
-        .card {
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            cursor: pointer;
-            backdrop-filter: blur(5px);
-            background-color: rgba(25, 25, 112, 0.7);
-        }
-        
-        .card:hover {
-            transform: translateY(-8px) scale(1.05);
-            background-color: rgba(0, 208, 205, 0.2);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2), 0 4px 6px -2px rgba(0, 0, 0, 0.1);
-        }
-
-        .carousel-container {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
-        
-        .carousel-container::-webkit-scrollbar {
-            display: none;
-        }
-
-        .fade-in-up {
-            animation: fadeInUp 0.8s ease-in-out;
-        }
-        
         @keyframes fadeInUp {
             from {
                 opacity: 0;
@@ -80,698 +30,877 @@
                 transform: translateY(0);
             }
         }
-
-        .fade-out-down {
-            animation: fadeOutDown 0.5s ease-in-out forwards;
+        .animate-fade-in-up {
+            animation: fadeInUp 0.6s ease-out forwards;
         }
-
-        @keyframes fadeOutDown {
-            from {
-                opacity: 1;
-                transform: translateY(0);
-            }
-            to {
-                opacity: 0;
-                transform: translateY(20px);
-            }
+        .animate-fade-in-up-delay-1 {
+            animation: fadeInUp 0.6s ease-out 0.2s forwards;
+            opacity: 0;
         }
-
-        .revolve-animation {
-            animation: revolve 1.5s infinite linear;
+        .animate-fade-in-up-delay-2 {
+            animation: fadeInUp 0.6s ease-out 0.4s forwards;
+            opacity: 0;
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.3s ease-in-out forwards;
         }
         
-        @keyframes revolve {
-            from {
-                transform: rotate(0deg);
-            }
-            to {
-                transform: rotate(360deg);
-            }
+        /* Utility for max-height on scrollable modal content */
+        .modal-content-scroll {
+            max-height: calc(90vh - 4rem);
         }
 
-        .social-link {
-            transition: color 0.3s ease, transform 0.3s ease;
+        /* Hide content that is not active */
+        .hidden-content {
+            display: none;
         }
 
-        .social-link:hover {
-            color: var(--accent-color);
-            transform: scale(1.1);
+        /* Loading Spinner */
+        .loader {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-left-color: #00d0cd;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
 
-        .modal {
-            background-color: rgba(0, 0, 0, 0.75);
-            backdrop-filter: blur(8px);
+        /* Markdown-like styling for itinerary */
+        .markdown-content h1, .markdown-content h2, .markdown-content h3 {
+            font-weight: bold;
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: #191970;
         }
-        
-        /* Adjusted modal content for no scrolling and better mobile fit */
-        #about-modal .modal-content, #personalize-modal .modal-content {
-            height: auto;
-            max-height: 90vh;
-            overflow-y: hidden;
-            width: 100%;
-            max-width: 90%;
+        .markdown-content h1 { font-size: 2.25rem; }
+        .markdown-content h2 { font-size: 1.75rem; }
+        .markdown-content h3 { font-size: 1.5rem; }
+        .markdown-content p {
+            margin-bottom: 1rem;
+            line-height: 1.6;
         }
-
-        @media (min-width: 768px) {
-            #about-modal .modal-content {
-                max-width: 70vw;
-                display: flex;
-            }
-            #personalize-modal .modal-content {
-                max-width: 70vw;
-                display: flex;
-            }
-        }
-
-        .card img {
-            width: 100%;
-            height: 120px;
-            object-fit: cover;
-            border-radius: 10px;
+        .markdown-content ul, .markdown-content ol {
+            list-style-type: disc;
+            padding-left: 2rem;
             margin-bottom: 1rem;
         }
-
-        .carousel-item-image {
-            width: 100%;
-            height: 200px; /* Increased height for larger carousels */
-            object-fit: cover;
+        .markdown-content li {
+            margin-bottom: 0.5rem;
         }
 
-        .prominent-btn {
-            background: linear-gradient(45deg, #00d0cd, #00b0b0);
-            box-shadow: 0 4px 15px rgba(0, 208, 205, 0.4);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        
-        .prominent-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 6px 20px rgba(0, 208, 205, 0.6);
-        }
-
-        .form-section-btn {
-            @apply w-full text-left px-4 py-3 rounded-xl font-semibold transition-colors duration-200;
-        }
-        
-        .form-section-btn.active {
-            @apply bg-accent-color text-primary-bg;
-        }
-        
-        /* Carousel Navigation Buttons Styling */
-        .carousel-nav-btn {
-            position: absolute;
+        /* Video Background Styling */
+        #video-background {
+            position: fixed;
             top: 50%;
-            transform: translateY(-50%);
-            z-index: 20;
-            background-color: rgba(0, 0, 0, 0.5);
-            color: white;
-            padding: 1rem;
-            border-radius: 9999px; /* full rounded */
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.3s ease;
-            opacity: 0.8;
+            left: 50%;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            z-index: -100;
+            transform: translateX(-50%) translateY(-50%);
+            background-size: cover;
         }
-        .carousel-nav-btn:hover {
-            background-color: rgba(0, 0, 0, 0.7);
-            opacity: 1;
-        }
-
-        /* About Us Menu Styling - UPDATED */
-        .about-menu-btn {
-            @apply w-full text-left px-4 py-3 rounded-xl font-semibold transition-colors duration-200 text-text-white hover:bg-white/20;
-        }
-
-        .about-menu-btn.active {
-            @apply bg-white text-primary-bg;
+        
+        /* Overlay to make text readable */
+        .video-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: -99;
         }
     </style>
 </head>
-<body class="fixed-screen-container">
+<body class="bg-gray-100">
 
-    <!-- Static Background Video -->
-    <video autoplay muted loop class="background-video">
-        <source src="./video/bgvideo.mp4" type="video/mp4">
-    </video>
+    <!-- Main Container -->
+    <div id="app-container" class="relative z-10 min-h-screen flex flex-col items-center">
 
-    <!-- Main Content Container -->
-    <main class="flex-grow flex flex-col justify-center items-center text-center px-4 bg-black bg-opacity-50">
-        
-        <!-- Header for navigation -->
+        <!-- Video Background with Overlay -->
+        <div class="video-overlay"></div>
+        <video id="video-background" autoplay muted loop playsinline>
+            <!-- Placeholder video from a royalty-free source like Pexels -->
+            <source src="./video/bgvideo.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+
+        <!-- Header -->
         <header class="absolute top-0 left-0 w-full p-6 flex justify-between items-center z-20">
-            <a href="#" onclick="backToCategories()" class="flex items-center space-x-2 cursor-pointer transition-colors hover:text-accent-color">
-                <img src="https://placehold.co/40x40/00d0cd/191970?text=Logo" alt="Brilliant AI Logo" class="h-8 w-8 rounded-full">
-                <h1 class="text-3xl font-bold text-white drop-shadow-lg">Brilliant AI</h1>
-            </a>
-            <div class="space-x-4">
-                <button onclick="showModal('about-modal')" class="px-4 py-2 bg-text-white text-primary-bg rounded-full font-semibold hover:bg-text-muted transition-all shadow-lg">About Us</button>
-                <button onclick="showModal('contact-modal')" class="px-4 py-2 bg-accent-color text-white rounded-full font-semibold hover:bg-[#00b0b0] transition-all shadow-lg">Contact Us</button>
+            <div class="flex items-center space-x-2 cursor-pointer transition-colors duration-300">
+                <div class="text-3xl font-extrabold text-[#00d0cd]">Brilliant AI</div>
+            </div>
+            <nav class="hidden md:flex space-x-8">
+                <a href="#" class="text-white font-semibold hover:text-[#00d0cd] transition-colors" data-action="home">Home</a>
+                <button class="text-white font-semibold hover:text-[#00d0cd] transition-colors" data-modal="about">About Us</button>
+                <button class="text-white font-semibold hover:text-[#00d0cd] transition-colors" data-modal="contact">Contact</button>
+            </nav>
+            <div class="md:hidden">
+                <button id="menu-btn" class="text-white hover:text-[#00d0cd]">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+                    </svg>
+                </button>
+            </div>
+            <!-- Mobile Menu -->
+            <div id="mobile-menu" class="hidden absolute top-16 right-6 bg-white rounded-lg shadow-xl p-4 md:hidden z-30">
+                <nav class="flex flex-col space-y-2">
+                    <a href="#" class="text-[#191970] font-semibold hover:text-[#00d0cd] transition-colors" data-action="home">Home</a>
+                    <button class="text-[#191970] font-semibold hover:text-[#00d0cd] transition-colors" data-modal="about">About Us</button>
+                    <button class="text-[#191970] font-semibold hover:text-[#00d0cd] transition-colors" data-modal="contact">Contact</button>
+                </nav>
             </div>
         </header>
 
-        <!-- Dynamic Content Section -->
-        <div id="dynamic-content-container" class="w-full max-w-6xl p-4">
-            <!-- Initial content with main categories -->
-            <div id="initial-view" class="fade-in-up">
-                <h2 class="text-5xl md:text-7xl font-bold text-white mb-4 drop-shadow-lg">Your Journey, Redefined.</h2>
-                <p class="text-xl md:text-2xl text-text-muted drop-shadow-lg max-w-2xl mx-auto mb-6 text-justify">Experience hyper-personalized travel planning with AI.</p>
-                
-                <!-- NEW: Personalize your travel button and text -->
-                <button onclick="showModal('personalize-modal')" class="prominent-btn text-white font-bold py-4 px-8 rounded-full shadow-lg text-lg mb-4">
-                    Personalize your Travel
-                </button>
-                <p class="text-lg text-text-light drop-shadow-lg max-w-xl mx-auto mb-12">
-                    Get Your Customized Itinerary Planned today
-                </p>
+        <!-- Main Content (Hero/Categories/Subsections) -->
+        <main id="main-content" class="text-center flex-grow flex flex-col justify-center items-center px-4 pt-20 pb-12 w-full"></main>
 
-                <div id="category-cards" class="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-6xl mx-auto">
-                    <div class="card p-8 rounded-2xl shadow-xl flex flex-col items-center text-center" data-category="family">
-                        <img src="https://placehold.co/400x250/F4F4F5/191970?text=Family" alt="Family Travel" class="w-full rounded-xl">
-                        <h3 class="text-2xl font-bold mb-2 mt-4">Family Travel</h3>
-                        <p class="text-text-muted text-justify">Create unforgettable memories with your loved ones.</p>
-                    </div>
-                    <div class="card p-8 rounded-2xl shadow-xl flex flex-col items-center text-center" data-category="solo">
-                        <img src="https://placehold.co/400x250/F4F4F5/191970?text=Solo" alt="Solo Travel" class="w-full rounded-xl">
-                        <h3 class="text-2xl font-bold mb-2 mt-4">Solo Travel</h3>
-                        <p class="text-text-muted text-justify">Discover yourself and the world on your own terms.</p>
-                    </div>
-                    <div class="card p-8 rounded-2xl shadow-xl flex flex-col items-center text-center" data-category="friends">
-                        <img src="https://placehold.co/400x250/F4F4F5/191970?text=Friends" alt="Travel with Friends" class="w-full rounded-xl">
-                        <h3 class="text-2xl font-bold mb-2 mt-4">Travel with Friends</h3>
-                        <p class="text-text-muted text-justify">Adventure, laughter, and new experiences await.</p>
-                    </div>
-                </div>
-            </div>
+    </div>
 
-            <!-- Sub-categories and Carousel Section (Initially Hidden) -->
-            <div id="sub-sections-view" class="pt-[25px] w-full max-w-6xl hidden">
-                <div class="flex justify-between items-center mb-8">
-                    <h2 id="sub-section-title" class="text-4xl font-bold"></h2>
-                    <button onclick="backToCategories()" class="text-2xl text-text-muted hover:text-white transition-colors">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-                <div id="sub-sections-menu" class="flex justify-center flex-wrap gap-4 mb-8">
-                    <!-- Sub-section buttons will be inserted here by JS -->
-                </div>
-                <div id="sub-section-content" class="min-h-[400px]">
-                    <!-- Carousel content will be inserted here by JS -->
-                </div>
-            </div>
-        </div>
+    <!-- Modals will be injected here by JavaScript -->
+    <div id="modal-container"></div>
 
-    </main>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
 
-    <!-- Modals (Initially Hidden) -->
-    <div id="about-modal" class="modal fixed inset-0 z-50 flex items-center justify-center p-4 hidden">
-        <div class="modal-content bg-primary-bg/40 rounded-xl shadow-2xl p-8 mx-auto text-left relative text-text-white flex flex-col md:flex-row overflow-hidden">
-            <button onclick="closeModal('about-modal')" class="absolute top-4 right-4 text-gray-400 hover:text-text-white transition-colors text-2xl">
-                <i class="fas fa-times"></i>
-            </button>
+            // --- State Management and Data ---
+            let state = {
+                showFormModal: false,
+                showAboutModal: false,
+                showContactModal: false,
+                showItineraryModal: false,
+                isGenerating: false,
+                generatedItinerary: null,
+                activeCategory: null,
+                activeSubSection: null,
+                aboutSection: 'introduction',
+                formData: {
+                    fullName: '', email: '', phone: '', preferredCommunication: [],
+                    sourceCity: '', destinationType: 'single', destination: '',
+                    travelDates: { startDate: '', endDate: '', flexibleDates: '' },
+                    travelers: { adults: 1, childrenAges: '', infants: 0 },
+                    travelingWith: [], travelingWithOther: '', travelPace: '', budget: '',
+                    accommodationPreferences: [], specificAmenities: '', diningExperiences: [], dietaryRestrictions: '',
+                    primaryInterests: [], primaryInterestsOther: '', mustSee: '', avoid: '',
+                    preferredTourStyle: '', localInteraction: '', accessibilityNeeds: '', otherInfo: '',
+                    howDidYouHear: '', howDidYouHearOther: ''
+                },
+                initialFormData: {
+                    fullName: '', email: '', phone: '', preferredCommunication: [],
+                    sourceCity: '', destinationType: 'single', destination: '',
+                    travelDates: { startDate: '', endDate: '', flexibleDates: '' },
+                    travelers: { adults: 1, childrenAges: '', infants: 0 },
+                    travelingWith: [], travelingWithOther: '', travelPace: '', budget: '',
+                    accommodationPreferences: [], specificAmenities: '', diningExperiences: [], dietaryRestrictions: '',
+                    primaryInterests: [], primaryInterestsOther: '', mustSee: '', avoid: '',
+                    preferredTourStyle: '', localInteraction: '', accessibilityNeeds: '', otherInfo: '',
+                    howDidYouHear: '', howDidYouHearOther: ''
+                }
+            };
             
-            <!-- Left Sidebar (Menu) -->
-            <aside class="w-full md:w-1/3 flex-shrink-0 bg-primary-bg/40 p-6 rounded-l-xl md:rounded-r-none overflow-y-auto border-r border-accent-color/20 md:border-b-0">
-                <h2 class="text-3xl font-bold mb-6 text-text-white">About Us</h2>
-                <nav id="about-sections-menu" class="space-y-4">
-                    <button class="about-menu-btn active" data-section="introduction">Introduction to Company</button>
-                    <button class="about-menu-btn" data-section="mission">Our Mission</button>
-                    <button class="about-menu-btn" data-section="vision">Our Vision</button>
-                </nav>
-            </aside>
-            
-            <!-- Right Content (Text) -->
-            <div id="about-content" class="w-full md:w-2/3 p-6 overflow-y-auto">
-                <div id="introduction" class="about-section">
-                    <h3 class="text-2xl font-semibold text-accent-color text-center mb-2">Introduction to Company</h3>
+            const travelData = {
+                family: {
+                    title: "Family Travel Plans",
+                    subSections: {
+                        india: [
+                            { image: "https://placehold.co/400x300/00d0cd/191970?text=India+Family+Trip", link: "#", title: "Jaipur Adventure" },
+                            { image: "https://placehold.co/400x300/00d0cd/191970?text=Kerala+Backwaters", link: "#", title: "Kerala Backwaters" },
+                            { image: "https://placehold.co/400x300/00d0cd/191970?text=Goa+Beaches", link: "#", title: "Goa Beaches" }
+                        ],
+                        southAsia: [
+                            { image: "https://placehold.co/400x300/00d0cd/191970?text=Maldives+Family", link: "#", title: "Maldives Getaway" },
+                            { image: "https://placehold.co/400x300/00d0cd/191970?text=Thailand+Islands", link: "#", title: "Thailand Islands" }
+                        ],
+                        europe: [
+                            { image: "https://placehold.co/400x300/00d0cd/191970?text=Paris+with+Kids", link: "#", title: "Parisian Magic" },
+                            { image: "https://placehold.co/400x300/00d0cd/191970?text=Swiss+Alps", link: "#", title: "Swiss Alps" },
+                            { image: "https://placehold.co/400x300/00d0cd/191970?text=Iceland+Family", link: "#", title: "Iceland Adventure" }
+                        ],
+                        america: [
+                            { image: "https://placehold.co/400x300/00d0cd/191970?text=Florida+Family", link: "#", title: "Florida Fun" },
+                            { image: "https://placehold.co/400x300/00d0cd/191970?text=Canadian+Rockies", link: "#", title: "Canadian Rockies" }
+                        ],
+                        others: [
+                            { image: "https://placehold.co/400x300/00d0cd/191970?text=Australia+Adventure", link: "#", title: "Australian Outback" },
+                            { image: "https://placehold.co/400x300/00d0cd/191970?text=Egypt+Pyramids", link: "#", title: "Egyptian Pyramids" }
+                        ]
+                    }
+                },
+                solo: {
+                    title: "Solo Travel Plans",
+                    subSections: {
+                        india: [
+                            { image: "https://placehold.co/400x300/00d0cd/191970?text=Goa+Solo", link: "#", title: "Goa Solo Trip" },
+                            { image: "https://placehold.co/400x300/00d0cd/191970?text=Ladakh+Himalayas", link: "#", title: "Ladakh Adventure" }
+                        ],
+                        southAsia: [
+                            { image: "https://placehold.co/400x300/00d0cd/191970?text=Nepal+Trek", link: "#", title: "Nepal Trek" },
+                            { image: "https://placehold.co/400x300/00d0cd/191970?text=Vietnam+Explore", link: "#", title: "Vietnam Exploration" }
+                        ],
+                        europe: [
+                            { image: "https://placehold.co/400x300/00d0cd/191970?text=Italian+Coast", link: "#", title: "Italian Coast" },
+                            { image: "https://placehold.co/400x300/00d0cd/191970?text=Iceland+Roadtrip", link: "#", title: "Iceland Roadtrip" }
+                        ],
+                        america: [
+                            { image: "https://placehold.co/400x300/00d0cd/191970?text=Peruvian+Hike", link: "#", title: "Peruvian Hike" },
+                            { image: "https://placehold.co/400x300/00d0cd/191970?text=Mexico+City", link: "#", title: "Mexico City" }
+                        ],
+                        others: [
+                            { image: "https://placehold.co/400x300/00d0cd/191970?text=Japan+Solo", link: "#", title: "Japanese Culture" },
+                            { image: "https://placehold.co/400x300/00d0cd/191970?text=New+Zealand+Hike", link: "#", title: "New Zealand Hike" }
+                        ]
+                    }
+                },
+                friends: {
+                    title: "Travel with Friends",
+                    subSections: {
+                        india: [
+                            { image: "https://placehold.co/400x300/00d0cd/191970?text=Ladakh+Trip", link: "#", title: "Ladakh Bike Trip" },
+                            { image: "https://placehold.co/400x300/00d0cd/191970?text=Rishikesh+Rafting", link: "#", title: "Rishikesh Rafting" }
+                        ],
+                        southAsia: [
+                            { image: "https://placehold.co/400x300/00d0cd/191970?text=Bali+Friends", link: "#", title: "Bali Group Trip" },
+                            { image: "https://placehold.co/400x300/00d0cd/191970?text=Singapore+Fun", link: "#", title: "Singapore City Tour" }
+                        ],
+                        europe: [
+                            { image: "https://placehold.co/400x300/00d0cd/191970?text=Eurotrip", link: "#", title: "European Road Trip" },
+                            { image: "https://placehold.co/400x300/00d0cd/191970?text=Greek+Islands", link: "#", title: "Greek Island Hopping" }
+                        ],
+                        america: [
+                            { image: "https://placehold.co/400x300/00d0cd/191970?text=Vegas+Party", link: "#", title: "Las Vegas Fun" },
+                            { image: "https://placehold.co/400x300/00d0cd/191970?text=NYC+Explore", link: "#", title: "New York City" }
+                        ],
+                        others: [
+                            { image: "https://placehold.co/400x300/00d0cd/191970?text=Bora+Bora", link: "#", title: "Bora Bora Retreat" },
+                            { image: "https://placehold.co/400x300/00d0cd/191970?text=South+Africa", link: "#", title: "South African Safari" }
+                        ]
+                    }
+                }
+            };
+
+            const aboutSections = {
+                introduction: `
+                    <h3 class="text-2xl font-semibold text-[#00d0cd] text-center mb-2">Introduction to Company</h3>
                     <p class="mt-2 text-justify">
                         The future of personalized experiences is here.
-                        <br><br>
+                        <br /><br />
                         We're building a world where your digital life companion truly understands you, anticipating needs and orchestrating perfect experiences securely. That's the vision driving Brilliant AI.
-                        <br><br>
+                        <br /><br />
                         We're pioneering Agentic AI to transform how you plan, experience, and share – from hyper-personalized travel with Plan&Trip, to secure content management with Plan & Post, and culturally nuanced wedding planning with Plan & Marry.
-                        <br><br>
+                        <br /><br />
                         We're not just building apps; we're building trust and enabling unparalleled convenience. Join us on this journey to redefine digital life.
-                        <br><br>
-                        Learn more at website link: <a href="https://brilliantaitravelandexpedition.com/" target="_blank" class="text-accent-color hover:underline">https://brilliantaitravelandexpedition.com/</a>
+                        <br /><br />
+                        Learn more at website link: <a href="https://brilliantaitravelandexpedition.com/" target="_blank" class="text-[#00d0cd] hover:underline">https://brilliantaitravelandexpedition.com/</a>
                     </p>
-                </div>
-                <div id="mission" class="about-section hidden">
-                    <h3 class="text-2xl font-semibold text-accent-color text-center mb-2">Our Mission</h3>
+                `,
+                mission: `
+                    <h3 class="text-2xl font-semibold text-[#00d0cd] text-center mb-2">Our Mission</h3>
                     <p class="mt-2 text-justify">
                         To empower modern travellers and lifestyle planners with hyper-personalized, seamless, and secure digital experiences, transforming the way they plan, experience, and share their travel journeys and life events. Our purpose is to make complex travel and event planning effortless, enjoyable, and uniquely tailored to each individual, leveraging cutting-edge AI.
                     </p>
-                </div>
-                <div id="vision" class="about-section hidden">
-                    <h3 class="text-2xl font-semibold text-accent-color text-center mb-2">Our Vision</h3>
+                `,
+                vision: `
+                    <h3 class="text-2xl font-semibold text-[#00d0cd] text-center mb-2">Our Vision</h3>
                     <p class="mt-2 text-justify">
                         To create a future where every journey and life event is effortlessly unique, deeply enriching, and perfectly tailored through intelligent technology. We aim to serve hundreds of millions of travellers, significantly grow our market share, and lead the development of sustainable tourism, leaving a lasting legacy in the travel world.
                     </p>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <div id="contact-modal" class="modal fixed inset-0 z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-secondary-bg rounded-xl shadow-2xl p-8 max-w-xl mx-auto text-left relative text-primary-bg">
-            <button onclick="closeModal('contact-modal')" class="absolute top-4 right-4 text-gray-500 hover:text-primary-bg transition-colors text-2xl">
-                <i class="fas fa-times"></i>
-            </button>
-            <h2 class="text-4xl font-bold text-center mb-6">Get in Touch</h2>
-            <p class="text-center text-gray-700 mb-8 text-justify">
-                Connect with us on our social media platforms. I will add the links for you once you provide them.
-            </p>
-            <div class="flex justify-center space-x-6 text-4xl">
-                <a href="#" class="social-link text-gray-500 hover:text-accent-color" aria-label="WhatsApp">
-                    <i class="fab fa-whatsapp"></i>
-                </a>
-                <a href="#" class="social-link text-gray-500 hover:text-accent-color" aria-label="Instagram">
-                    <i class="fab fa-instagram"></i>
-                </a>
-                <a href="#" class="social-link text-gray-500 hover:text-accent-color" aria-label="Facebook">
-                    <i class="fab fa-facebook-f"></i>
-                </a>
-                <a href="#" class="social-link text-gray-500 hover:text-accent-color" aria-label="LinkedIn">
-                    <i class="fab fa-linkedin-in"></i>
-                </a>
-            </div>
-        </div>
-    </div>
+                `
+            };
 
-    <!-- NEW: Personalize Trip Form Modal -->
-    <div id="personalize-modal" class="modal fixed inset-0 z-50 flex items-center justify-center p-4 hidden">
-        <div class="modal-content bg-secondary-bg rounded-xl shadow-2xl p-8 mx-auto text-left relative text-primary-bg w-full max-w-5xl h-[80vh] flex flex-col md:flex-row overflow-hidden">
-            <button onclick="closeModal('personalize-modal')" class="absolute top-4 right-4 text-gray-500 hover:text-primary-bg transition-colors text-2xl z-10">
-                <i class="fas fa-times"></i>
-            </button>
-            
-            <!-- Left Sidebar (Menu) -->
-            <aside class="w-full md:w-1/3 flex-shrink-0 bg-gray-100 p-6 rounded-l-xl md:rounded-r-none overflow-y-auto">
-                <h2 class="text-3xl font-bold mb-6 text-primary-bg">Personalize Your Trip</h2>
-                <nav id="form-sections-menu" class="space-y-4">
-                    <!-- Section buttons will be dynamically inserted here -->
-                </nav>
-            </aside>
-            
-            <!-- Right Content (Form) -->
-            <div id="form-content" class="w-full md:w-2/3 p-6 overflow-y-auto">
-                <!-- Form content will be dynamically inserted here -->
-            </div>
-        </div>
-    </div>
+            // --- DOM Elements ---
+            const mainContent = document.getElementById('main-content');
+            const modalContainer = document.getElementById('modal-container');
+            const menuBtn = document.getElementById('menu-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
 
-    <script>
-        const travelData = {
-            family: {
-                title: "Family Travel Plans",
-                subSections: {
-                    india: [
-                        { image: "https://placehold.co/400x300/00d0cd/191970?text=India+Family+Trip", link: "#", title: "Jaipur Adventure" },
-                        { image: "https://placehold.co/400x300/00d0cd/191970?text=Kerala+Backwaters", link: "#", title: "Kerala Backwaters" },
-                        { image: "https://placehold.co/400x300/00d0cd/191970?text=Goa+Beaches", link: "#", title: "Goa Beaches" }
-                    ],
-                    southAsia: [
-                        { image: "https://placehold.co/400x300/00d0cd/191970?text=Maldives+Family", link: "#", title: "Maldives Getaway" },
-                        { image: "https://placehold.co/400x300/00d0cd/191970?text=Thailand+Islands", link: "#", title: "Thailand Islands" }
-                    ],
-                    europe: [
-                        { image: "https://placehold.co/400x300/00d0cd/191970?text=Paris+with+Kids", link: "#", title: "Parisian Magic" },
-                        { image: "https://placehold.co/400x300/00d0cd/191970?text=Swiss+Alps", link: "#", title: "Swiss Alps" },
-                        { image: "https://placehold.co/400x300/00d0cd/191970?text=Iceland+Family", link: "#", title: "Iceland Adventure" }
-                    ],
-                    america: [
-                        { image: "https://placehold.co/400x300/00d0cd/191970?text=Florida+Family", link: "#", title: "Florida Fun" },
-                        { image: "https://placehold.co/400x300/00d0cd/191970?text=Canadian+Rockies", link: "#", title: "Canadian Rockies" }
-                    ],
-                    others: [
-                        { image: "https://placehold.co/400x300/00d0cd/191970?text=Australia+Adventure", link: "#", title: "Australian Outback" },
-                        { image: "https://placehold.co/400x300/00d0cd/191970?text=Egypt+Pyramids", link: "#", title: "Egyptian Pyramids" }
-                    ]
+            // --- Helper Functions ---
+
+            // Function to generate a detailed prompt for the AI based on form data
+            const createAIprompt = (formData) => {
+                const {
+                    fullName, email, sourceCity, destinationType, destination,
+                    travelDates, travelers, travelingWith, travelPace, budget,
+                    accommodationPreferences, specificAmenities, diningExperiences,
+                    dietaryRestrictions, primaryInterests, mustSee, avoid,
+                    preferredTourStyle, localInteraction, accessibilityNeeds, otherInfo
+                } = formData;
+
+                // Basic validation for key fields
+                if (!destination || !travelDates.startDate || !travelDates.endDate) {
+                    return "Please provide a destination, start date, and end date to create an itinerary.";
                 }
-            },
-            solo: {
-                title: "Solo Travel Plans",
-                subSections: {
-                    india: [
-                        { image: "https://placehold.co/400x300/00d0cd/191970?text=Goa+Solo", link: "#", title: "Goa Solo Trip" },
-                        { image: "https://placehold.co/400x300/00d0cd/191970?text=Ladakh+Himalayas", link: "#", title: "Ladakh Adventure" }
-                    ],
-                    southAsia: [
-                        { image: "https://placehold.co/400x300/00d0cd/191970?text=Nepal+Trek", link: "#", title: "Nepal Trek" },
-                        { image: "https://placehold.co/400x300/00d0cd/191970?text=Vietnam+Explore", link: "#", title: "Vietnam Exploration" }
-                    ],
-                    europe: [
-                        { image: "https://placehold.co/400x300/00d0cd/191970?text=Italian+Coast", link: "#", title: "Italian Coast" },
-                        { image: "https://placehold.co/400x300/00d0cd/191970?text=Iceland+Roadtrip", link: "#", title: "Iceland Roadtrip" }
-                    ],
-                    america: [
-                        { image: "https://placehold.co/400x300/00d0cd/191970?text=Peruvian+Hike", link: "#", title: "Peruvian Hike" },
-                        { image: "https://placehold.co/400x300/00d0cd/191970?text=Mexico+City", link: "#", title: "Mexico City" }
-                    ],
-                    others: [
-                        { image: "https://placehold.co/400x300/00d0cd/191970?text=Japan+Solo", link: "#", title: "Japanese Culture" },
-                        { image: "https://placehold.co/400x300/00d0cd/191970?text=New+Zealand+Hike", link: "#", title: "New Zealand Hike" }
-                    ]
-                }
-            },
-            friends: {
-                title: "Travel with Friends",
-                subSections: {
-                    india: [
-                        { image: "https://placehold.co/400x300/00d0cd/191970?text=Ladakh+Trip", link: "#", title: "Ladakh Bike Trip" },
-                        { image: "https://placehold.co/400x300/00d0cd/191970?text=Rishikesh+Rafting", link: "#", title: "Rishikesh Rafting" }
-                    ],
-                    southAsia: [
-                        { image: "https://placehold.co/400x300/00d0cd/191970?text=Bali+Friends", link: "#", title: "Bali Group Trip" },
-                        { image: "https://placehold.co/400x300/00d0cd/191970?text=Singapore+Fun", link: "#", title: "Singapore City Tour" }
-                    ],
-                    europe: [
-                        { image: "https://placehold.co/400x300/00d0cd/191970?text=Eurotrip", link: "#", title: "European Road Trip" },
-                        { image: "https://placehold.co/400x300/00d0cd/191970?text=Greek+Islands", link: "#", title: "Greek Island Hopping" }
-                    ],
-                    america: [
-                        { image: "https://placehold.co/400x300/00d0cd/191970?text=Vegas+Party", link: "#", title: "Las Vegas Fun" },
-                        { image: "https://placehold.co/400x300/00d0cd/191970?text=NYC+Explore", link: "#", title: "New York City" }
-                    ],
-                    others: [
-                        { image: "https://placehold.co/400x300/00d0cd/191970?text=Bora+Bora", link: "#", title: "Bora Bora Retreat" },
-                        { image: "https://placehold.co/400x300/00d0cd/191970?text=South+Africa", link: "#", title: "South African Safari" }
-                    ]
-                }
-            }
-        };
 
-        const initialView = document.getElementById('initial-view');
-        const categoriesContainer = document.getElementById('category-cards');
-        const subSectionsView = document.getElementById('sub-sections-view');
-        const subSectionsMenu = document.getElementById('sub-sections-menu');
-        const subSectionContent = document.getElementById('sub-section-content');
-        const subSectionTitle = document.getElementById('sub-section-title');
-        
-        // About Us form elements
-        const aboutSectionsMenu = document.getElementById('about-sections-menu');
-        const aboutContent = document.getElementById('about-content');
+                // Constructing the detailed prompt
+                const prompt = `
+                    You are a highly skilled AI travel agent. Create a detailed, multi-day travel itinerary based on the following user preferences. The itinerary should be well-structured, day-by-day, and include recommendations for activities, food, and accommodation. Use a friendly, enthusiastic tone.
 
-        // Form elements
-        const formSectionsMenu = document.getElementById('form-sections-menu');
-        const formContent = document.getElementById('form-content');
+                    --- User's Travel Preferences ---
+                    * **Name:** ${fullName}
+                    * **Traveling From:** ${sourceCity || 'Not specified'}
+                    * **Destination:** ${destination} (${destinationType} trip)
+                    * **Travel Dates:** From ${travelDates.startDate} to ${travelDates.endDate} ${travelDates.flexibleDates ? `(Flexible: ${travelDates.flexibleDates})` : ''}
+                    * **Number of Travelers:** ${travelers.adults} Adults, ${travelers.childrenAges ? `${travelers.childrenAges} Children` : ''}, ${travelers.infants} Infants
+                    * **Travel Group:** ${travelingWith.join(', ') || 'Not specified'}
+                    * **Travel Pace:** ${travelPace || 'Not specified'}
+                    * **Budget:** ${budget || 'Not specified'}
+                    * **Accommodation:** ${accommodationPreferences.join(', ') || 'Not specified'}. Specific amenities: ${specificAmenities || 'None specified'}.
+                    * **Dining:** ${diningExperiences.join(', ') || 'Not specified'}. Dietary restrictions: ${dietaryRestrictions || 'None specified'}.
+                    * **Interests:** ${primaryInterests.join(', ') || 'Not specified'}. Must-see: ${mustSee || 'None specified'}. To avoid: ${avoid || 'None specified'}.
+                    * **Tour Style:** ${preferredTourStyle || 'Not specified'}
+                    * **Local Interaction:** ${localInteraction || 'Not a priority'}
+                    * **Accessibility Needs:** ${accessibilityNeeds || 'None specified'}
+                    * **Other Info:** ${otherInfo || 'None specified'}
 
-        // Data for the personalization form
-        const personalizationFormData = {
-            "Contact Information": [
-                { type: "text", label: "Full Name", id: "fullName", placeholder: "John Doe" },
-                { type: "email", label: "Email Address", id: "email", placeholder: "johndoe@example.com" },
-                { type: "tel", label: "Phone Number (Optional, for urgent communication)", id: "phoneNumber", placeholder: "+1-555-555-5555" },
-                { type: "radio", label: "Preferred Communication Method", name: "communicationMethod", options: ["Email", "Phone Call", "WhatsApp"] }
-            ],
-            "Trip Essentials": [
-                { type: "text", label: "Source City", id: "sourceCity", placeholder: "New York" },
-                { type: "textarea", label: "Desired Destination(s) (City, Country, Region – specify multiple if a multi-stop trip)", id: "destinations", placeholder: "e.g., Reykjavik, Iceland; Paris, France" },
-                { type: "date", label: "Start Date", id: "startDate" },
-                { type: "date", label: "End Date", id: "endDate" },
-                { type: "text", label: "If flexible, please indicate preferred month/season", id: "flexibleDates", placeholder: "e.g., Summer 2024" },
-                { type: "number", label: "Number of Adults (18+)", id: "adults", placeholder: "2" },
-                { type: "text", label: "Children (Ages, e.g., '6, 10, 14')", id: "childrenAges", placeholder: "e.g., 6, 10, 14" },
-                { type: "number", label: "Infants (Under 2)", id: "infants", placeholder: "0" }
-            ],
-            "Travel Style & Preferences": [
-                { type: "checkbox", label: "Who are you traveling with?", name: "travelingWith", options: ["Solo", "Partner/Spouse", "Family with young children", "Family with teenagers", "Friends", "Colleagues/Business Trip", "Other (Please specify)"] },
-                { type: "radio", label: "What is your preferred travel pace?", name: "travelPace", options: ["Relaxed (Plenty of downtime, slow exploration)", "Moderate (Good balance of activities and relaxation)", "Active (Packed itinerary, seeing as much as possible)", "Adventure-packed (Focus on thrilling activities)"] },
-                { type: "radio", label: "What is your general budget comfort level for this trip?", name: "budgetLevel", options: ["Budget-Conscious", "Mid-Range", "Upscale", "Luxury", "Flexible"] },
-                { type: "checkbox", label: "Accommodation Preferences:", name: "accommodation", options: ["Hotels (Standard/Chain)", "Boutique Hotels", "Resorts (All-inclusive, beachfront, etc.)", "Vacation Rentals", "Unique Stays", "Hostels/Guesthouses"] },
-                { type: "text", label: "Specific amenities (e.g., pool, gym, spa)", id: "amenities", placeholder: "e.g., heated pool, gym" },
-                { type: "checkbox", label: "Preferred Dining Experiences:", name: "dining", options: ["Fine Dining / Michelin Star", "Local Cuisine / Street Food", "Casual Restaurants / Cafes"] },
-                { type: "text", label: "Any Dietary Restrictions/Allergies?", id: "dietary", placeholder: "e.g., Vegetarian, Gluten-Free" }
-            ],
-            "Interests & Desired Experiences": [
-                { type: "checkbox", label: "What are your primary interests for this trip?", name: "interests", options: ["Culture & History", "Food & Drink", "Nature & Outdoors", "Adventure & Sports", "Relaxation & Wellness", "Art & Design", "Shopping & Fashion", "Nightlife & Entertainment", "Family-Friendly Activities", "Photography", "Philanthropic/Volunteering opportunities", "Other (Please specify)"] },
-                { type: "textarea", label: "Are there any specific 'must-see' landmarks, attractions, or activities for this trip?", id: "mustSee", placeholder: "e.g., Eiffel Tower, Great Wall of China" },
-                { type: "textarea", label: "Are there any activities, places, or experiences you absolutely want to AVOID?", id: "mustAvoid", placeholder: "e.g., crowded museums, extreme sports" },
-                { type: "radio", label: "Do you prefer:", name: "tourPreference", options: ["Guided tours with a group", "Private guided tours", "Self-guided exploration", "A mix of the above"] },
-                { type: "radio", label: "How important is it to interact with locals and experience authentic culture?", name: "localInteraction", options: ["Very Important", "Moderately Important", "Not a priority"] },
-                { type: "textarea", label: "Any specific mobility or accessibility needs we should be aware of?", id: "accessibility", placeholder: "e.g., wheelchair accessible, limited walking" },
-                { type: "textarea", label: "Is there anything else you'd like us to know?", id: "additionalInfo", placeholder: "e.g., celebrating a birthday" }
-            ],
-            "How you found us": [
-                { type: "checkbox", label: "How did you hear about Brilliant AI Plan&Trip?", name: "howFoundUs", options: ["Social Media (Specify platform)", "Friend/Family Referral", "Online Search", "Article/Blog", "Event/Conference", "Other"] }
-            ]
-        };
+                    --- Itinerary Generation Instructions ---
+                    1.  **Start with a warm introduction.**
+                    2.  **Break down the itinerary by day.** Each day should have a clear heading.
+                    3.  **For each day, suggest specific activities, landmarks, and experiences.** Provide a brief description of each.
+                    4.  **Include recommendations for restaurants or local eateries** for at least one meal per day.
+                    5.  **Suggest a type of accommodation** that fits the budget and preferences.
+                    6.  **Conclude with a friendly closing remark.**
+                    7.  Format the response using Markdown. Use headings, bold text, and bullet points to make it easy to read. Do not include any extra text before the start of the itinerary.
+                `;
+                return prompt;
+            };
 
-        // Function to handle category card clicks
-        categoriesContainer.addEventListener('click', (event) => {
-            let card = event.target.closest('.card');
-            if (card) {
-                const category = card.dataset.category;
-                const data = travelData[category];
+            // Main rendering function that determines what to show
+            const render = () => {
+                mainContent.innerHTML = '';
                 
-                // Add a visual effect to the card while transitioning
-                card.innerHTML = `<i class="fas fa-spinner revolve-animation text-5xl text-accent-color my-10"></i>`;
+                if (state.activeCategory) {
+                    renderSubsections();
+                } else {
+                    renderHeroAndCategories();
+                }
+                renderModals();
+            };
 
-                // After a short delay for the animation
-                setTimeout(() => {
-                    // Animate out the initial view
-                    initialView.classList.remove('fade-in-up');
-                    initialView.classList.add('fade-out-down');
-    
-                    // Wait for the animation to finish before changing content
-                    setTimeout(() => {
-                        initialView.classList.add('hidden');
-                        subSectionsView.classList.remove('hidden');
-                        subSectionsView.classList.add('fade-in-up');
-                        
-                        subSectionTitle.textContent = data.title;
-                        renderSubSections(data, category);
-                    }, 500); // Match fadeOutDown animation duration
-                }, 1000); // Duration of the revolving animation
-            }
-        });
+            const renderHeroAndCategories = () => {
+                mainContent.innerHTML = `
+                    <!-- Hero Section -->
+                    <section class="text-center flex-grow flex flex-col justify-center items-center px-4 pt-20 pb-12 w-full">
+                        <h1 class="text-5xl md:text-7xl font-black text-white mb-4 drop-shadow-lg animate-fade-in-up">
+                            Your Journey, Reimagined by AI
+                        </h1>
+                        <p class="text-xl md:text-2xl text-gray-200 max-w-3xl mx-auto drop-shadow-lg mb-8 animate-fade-in-up-delay-1">
+                            Explore our hyper-personalized travel plans and itineraries.
+                        </p>
+                        <button id="start-planning-btn" class="bg-[#00d0cd] text-white px-8 py-4 rounded-full font-extrabold text-lg shadow-2xl hover:bg-opacity-80 transition-colors duration-300 transform hover:scale-105 active:scale-100 animate-fade-in-up-delay-2">
+                            Start Planning
+                        </button>
+                    </section>
 
-        // Function to go back to the main categories
-        function backToCategories() {
-            // Restore initial card content
-            document.getElementById('category-cards').innerHTML = `
-                <div class="card p-8 rounded-2xl shadow-xl flex flex-col items-center text-center" data-category="family">
-                    <img src="https://placehold.co/400x250/F4F4F5/191970?text=Family" alt="Family Travel" class="w-full rounded-xl">
-                    <h3 class="text-2xl font-bold mb-2 mt-4">Family Travel</h3>
-                    <p class="text-text-muted text-justify">Create unforgettable memories with your loved ones.</p>
-                </div>
-                <div class="card p-8 rounded-2xl shadow-xl flex flex-col items-center text-center" data-category="solo">
-                    <img src="https://placehold.co/400x250/F4F4F5/191970?text=Solo" alt="Solo Travel" class="w-full rounded-xl">
-                    <h3 class="text-2xl font-bold mb-2 mt-4">Solo Travel</h3>
-                    <p class="text-text-muted text-justify">Discover yourself and the world on your own terms.</p>
-                </div>
-                <div class="card p-8 rounded-2xl shadow-xl flex flex-col items-center text-center" data-category="friends">
-                    <img src="https://placehold.co/400x250/F4F4F5/191970?text=Friends" alt="Travel with Friends" class="w-full rounded-xl">
-                    <h3 class="text-2xl font-bold mb-2 mt-4">Travel with Friends</h3>
-                    <p class="text-text-muted text-justify">Adventure, laughter, and new experiences await.</p>
-                </div>
-            `;
+                    <!-- Content Section - Categories -->
+                    <section id="category-section" class="w-full max-w-7xl px-4 py-16 transition-all duration-500 transform opacity-100 scale-100 bg-white rounded-xl shadow-2xl mt-8">
+                        <h2 class="text-4xl font-bold text-center mb-12 text-[#191970]">
+                            Our AI-Curated Plans
+                        </h2>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                            ${Object.keys(travelData).map(category => `
+                                <div class="group cursor-pointer rounded-xl overflow-hidden shadow-2xl hover:shadow-3xl transition-all duration-300 transform hover:-translate-y-2 bg-white" data-category="${category}">
+                                    <div class="p-8">
+                                        <h3 class="text-2xl font-bold text-[#191970] text-center capitalize">
+                                            ${travelData[category].title}
+                                        </h3>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </section>
+                `;
 
-            subSectionsView.classList.remove('fade-in-up');
-            subSectionsView.classList.add('fade-out-down');
-
-            setTimeout(() => {
-                subSectionsView.classList.add('hidden');
-                initialView.classList.remove('hidden', 'fade-out-down');
-                initialView.classList.add('fade-in-up');
-            }, 500);
-        }
-
-        // Function to render the sub-section buttons and initial content
-        function renderSubSections(data, category) {
-            subSectionsMenu.innerHTML = '';
-            subSectionContent.innerHTML = '';
-
-            const subSectionKeys = Object.keys(data.subSections);
-            subSectionKeys.forEach(key => {
-                const button = document.createElement('button');
-                button.textContent = key.charAt(0).toUpperCase() + key.slice(1);
-                button.classList.add('px-6', 'py-2', 'bg-accent-color/20', 'rounded-full', 'font-semibold', 'hover:bg-accent-color', 'transition-colors');
-                button.dataset.location = key;
-                button.addEventListener('click', () => {
-                    renderCarousel(data.subSections[key], `${category}-${key}`);
-                    // Update active state of buttons
-                    document.querySelectorAll('#sub-sections-menu button').forEach(btn => btn.classList.remove('bg-accent-color'));
-                    button.classList.add('bg-accent-color');
+                // Add event listeners for the hero section
+                document.getElementById('start-planning-btn').addEventListener('click', () => {
+                    state.showFormModal = true;
+                    render();
                 });
-                subSectionsMenu.appendChild(button);
-            });
+
+                // Add event listeners for categories using event delegation
+                const categorySection = document.getElementById('category-section');
+                categorySection.addEventListener('click', (e) => {
+                    const categoryDiv = e.target.closest('[data-category]');
+                    if (categoryDiv) {
+                        state.activeCategory = categoryDiv.dataset.category;
+                        state.activeSubSection = Object.keys(travelData[state.activeCategory].subSections)[0];
+                        render();
+                    }
+                });
+            };
+
+            const renderSubsections = () => {
+                const category = state.activeCategory;
+                const subSections = travelData[category].subSections;
+                const activeSubSectionData = subSections[state.activeSubSection] || [];
+
+                mainContent.innerHTML = `
+                    <section class="w-full max-w-7xl px-4 py-16 transition-all duration-500 transform opacity-100 scale-100 bg-white rounded-xl shadow-2xl mt-8">
+                        <button id="back-to-categories-btn" class="flex items-center text-[#191970] font-bold mb-8 hover:text-[#00d0cd] transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                            </svg>
+                            Back to Categories
+                        </button>
+                        <h2 class="text-4xl font-bold text-center mb-8 text-[#191970]">
+                            ${travelData[category].title}
+                        </h2>
+                        <div id="sub-section-buttons" class="flex flex-wrap justify-center gap-4 mb-8">
+                            ${Object.keys(subSections).map(subSection => `
+                                <button class="px-6 py-2 rounded-full font-semibold transition-colors duration-200 capitalize
+                                    ${state.activeSubSection === subSection ? 'bg-[#00d0cd] text-white shadow-md' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}"
+                                    data-subsection="${subSection}">
+                                    ${subSection.replace('southAsia', 'South Asia')}
+                                </button>
+                            `).join('')}
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+                            ${activeSubSectionData.map(plan => `
+                                <a href="${plan.link}" class="group block rounded-xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 bg-white">
+                                    <img src="${plan.image}" alt="${plan.title}" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300" 
+                                    onerror="this.onerror=null;this.src='https://placehold.co/400x300/00d0cd/191970?text=${plan.title.replace(/\s/g, '+')}'" />
+                                    <div class="p-4">
+                                        <h3 class="text-xl font-semibold text-[#191970]">${plan.title}</h3>
+                                    </div>
+                                </a>
+                            `).join('')}
+                        </div>
+                    </section>
+                `;
+
+                // Add event listeners for the subsection page
+                document.getElementById('back-to-categories-btn').addEventListener('click', () => {
+                    state.activeCategory = null;
+                    state.activeSubSection = null;
+                    render();
+                });
+
+                document.getElementById('sub-section-buttons').addEventListener('click', (e) => {
+                    const button = e.target.closest('button');
+                    if (button) {
+                        state.activeSubSection = button.dataset.subsection;
+                        render();
+                    }
+                });
+            };
+
+            const renderModals = () => {
+                modalContainer.innerHTML = '';
+                if (state.showFormModal) {
+                    renderFormModal();
+                } else if (state.showAboutModal) {
+                    renderAboutModal();
+                } else if (state.showContactModal) {
+                    renderContactModal();
+                } else if (state.showItineraryModal) {
+                    renderItineraryModal();
+                } else if (state.isGenerating) {
+                    renderLoadingModal();
+                }
+            };
             
-            // Trigger a click on the first sub-section to show initial content
-            const firstButton = subSectionsMenu.querySelector('button');
-            if (firstButton) {
-                firstButton.click();
-            }
-        }
-        
-        // Function to render the image carousel with navigation
-        function renderCarousel(items, carouselId) {
-            subSectionContent.innerHTML = '';
-            const carouselWrapperContainer = document.createElement('div');
-            carouselWrapperContainer.classList.add('relative', 'flex', 'items-center', 'w-full');
-
-            // Left Arrow Button
-            const leftBtn = document.createElement('button');
-            leftBtn.classList.add('carousel-nav-btn', 'left-0', 'ml-2');
-            leftBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>`;
-            leftBtn.onclick = () => scrollCarousel(carouselId, -1);
-            carouselWrapperContainer.appendChild(leftBtn);
-
-            const carouselWrapper = document.createElement('div');
-            carouselWrapper.id = carouselId; // Assign a unique ID for scrolling
-            carouselWrapper.classList.add('carousel-container', 'flex', 'overflow-x-auto', 'space-x-4', 'p-4', 'snap-x', 'snap-mandatory', 'w-full');
-
-            items.forEach(item => {
-                const card = document.createElement('a');
-                card.classList.add('flex-shrink-0', 'w-[90vw]', 'md:min-w-[400px]', 'md:w-[450px]', 'snap-center', 'bg-accent-color/10', 'rounded-2xl', 'overflow-hidden', 'shadow-xl', 'hover:scale-105', 'transition-transform');
-                card.href = item.link;
-                card.innerHTML = `
-                    <img src="${item.image}" alt="${item.title}" class="carousel-item-image w-full">
-                    <div class="p-6 text-center">
-                        <h4 class="font-semibold text-xl text-text-white text-balance mb-2">${item.title}</h4>
-                        <p class="text-base text-text-muted">View Itinerary</p>
+            const renderFormModal = () => {
+                modalContainer.innerHTML = `
+                    <div id="form-modal" class="fixed inset-0 z-[100] bg-black bg-opacity-75 flex items-center justify-center p-4 overflow-y-auto animate-fade-in">
+                        <div class="bg-gray-50 text-[#191970] rounded-lg shadow-2xl p-8 max-w-7xl w-full my-8 relative flex flex-col md:flex-row animate-fade-in-up">
+                            <button id="close-form-btn" class="absolute top-4 right-4 text-[#191970] hover:text-gray-600 transition duration-200 z-50">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                            </button>
+                            <!-- Left Menu Panel -->
+                            <div id="form-nav" class="w-full md:w-1/3 flex-shrink-0 border-b md:border-b-0 md:border-r border-gray-300 pb-4 md:pr-8 md:pb-0">
+                                <h2 class="text-3xl font-extrabold text-[#191970] mb-6">Personalize Your Trip</h2>
+                                <nav class="space-y-4">
+                                    <button class="w-full text-left px-4 py-3 rounded-lg font-semibold transition-colors duration-200 bg-[#00d0cd] text-white shadow-md" data-section="contact">1. Your Contact Information</button>
+                                    <button class="w-full text-left px-4 py-3 rounded-lg font-semibold transition-colors duration-200 bg-transparent text-[#191970] hover:bg-gray-200" data-section="essentials">2. Trip Essentials</button>
+                                    <button class="w-full text-left px-4 py-3 rounded-lg font-semibold transition-colors duration-200 bg-transparent text-[#191970] hover:bg-gray-200" data-section="style">3. Your Travel Style & Preferences</button>
+                                    <button class="w-full text-left px-4 py-3 rounded-lg font-semibold transition-colors duration-200 bg-transparent text-[#191970] hover:bg-gray-200" data-section="interests">4. Your Interests & Desired Experiences</button>
+                                </nav>
+                            </div>
+                            <!-- Right Form Content Panel -->
+                            <div id="form-content" class="flex-grow pt-8 md:pt-0 md:pl-8 overflow-y-auto modal-content-scroll">
+                                <form id="travel-form" class="space-y-8"></form>
+                            </div>
+                        </div>
                     </div>
                 `;
-                carouselWrapper.appendChild(card);
-            });
-            
-            carouselWrapperContainer.appendChild(carouselWrapper);
-
-            // Right Arrow Button
-            const rightBtn = document.createElement('button');
-            rightBtn.classList.add('carousel-nav-btn', 'right-0', 'mr-2');
-            rightBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>`;
-            rightBtn.onclick = () => scrollCarousel(carouselId, 1);
-            carouselWrapperContainer.appendChild(rightBtn);
-            
-            subSectionContent.appendChild(carouselWrapperContainer);
-        }
-
-        // Function to scroll the carousel
-        function scrollCarousel(containerId, direction) {
-            const container = document.getElementById(containerId);
-            if (container) {
-                const scrollAmount = container.querySelector('a').offsetWidth + 16; // Card width + gap
-                container.scrollBy({ left: scrollAmount * direction, behavior: 'smooth' });
-            }
-        }
-
-        // Functions for the new personalization form
-        function renderFormSections() {
-            formSectionsMenu.innerHTML = '';
-            const sections = Object.keys(personalizationFormData);
-            sections.forEach((section, index) => {
-                const button = document.createElement('button');
-                button.textContent = `Section ${index + 1}: ${section}`;
-                button.classList.add('form-section-btn', 'text-gray-700', 'hover:bg-accent-color/50');
-                button.dataset.section = section;
-                button.addEventListener('click', () => {
-                    renderFormContent(section);
-                    // Update active state
-                    document.querySelectorAll('.form-section-btn').forEach(btn => btn.classList.remove('active'));
-                    button.classList.add('active');
-                });
-                formSectionsMenu.appendChild(button);
-            });
-            // Show the first section by default
-            if (sections.length > 0) {
-                document.querySelector('.form-section-btn').click();
-            }
-        }
-
-        function renderFormContent(section) {
-            formContent.innerHTML = '';
-            const sectionData = personalizationFormData[section];
-            const title = document.createElement('h3');
-            title.textContent = section;
-            title.classList.add('text-3xl', 'font-bold', 'mb-6', 'text-primary-bg');
-            formContent.appendChild(title);
-            
-            sectionData.forEach(field => {
-                const formGroup = document.createElement('div');
-                formGroup.classList.add('mb-6');
                 
-                const label = document.createElement('label');
-                label.textContent = field.label;
-                label.htmlFor = field.id;
-                label.classList.add('block', 'text-lg', 'font-medium', 'text-gray-700', 'mb-2');
-                formGroup.appendChild(label);
+                const formNav = document.getElementById('form-nav');
+                const formContent = document.getElementById('form-content');
+                const form = document.getElementById('travel-form');
 
-                if (field.type === "text" || field.type === "email" || field.type === "tel" || field.type === "date" || field.type === "number") {
-                    const input = document.createElement('input');
-                    input.type = field.type;
-                    input.id = field.id;
-                    input.name = field.id;
-                    input.placeholder = field.placeholder || '';
-                    input.classList.add('w-full', 'px-4', 'py-3', 'rounded-lg', 'bg-gray-50', 'border', 'border-gray-300', 'focus:outline-none', 'focus:ring-2', 'focus:ring-accent-color');
-                    formGroup.appendChild(input);
-                } else if (field.type === "textarea") {
-                    const textarea = document.createElement('textarea');
-                    textarea.id = field.id;
-                    textarea.name = field.id;
-                    textarea.rows = 4;
-                    textarea.placeholder = field.placeholder || '';
-                    textarea.classList.add('w-full', 'px-4', 'py-3', 'rounded-lg', 'bg-gray-50', 'border', 'border-gray-300', 'focus:outline-none', 'focus:ring-2', 'focus:ring-accent-color');
-                    formGroup.appendChild(textarea);
-                } else if (field.type === "radio" || field.type === "checkbox") {
-                    field.options.forEach(option => {
-                        const optionGroup = document.createElement('div');
-                        optionGroup.classList.add('flex', 'items-center', 'mb-2');
+                const renderFormSection = (sectionId) => {
+                    let html = '';
+                    switch (sectionId) {
+                        case 'contact':
+                            html = `
+                                <section class="space-y-6">
+                                    <h3 class="text-2xl font-bold text-[#191970] border-b-2 border-gray-200 pb-2">Your Contact Information</h3>
+                                    <div class="flex flex-col"><label for="fullName" class="text-sm font-medium text-gray-700">Full Name</label><input type="text" id="fullName" name="fullName" value="${state.formData.fullName}" required class="mt-1 p-3 border border-gray-300 rounded-md focus:ring-[#00d0cd] focus:border-[#00d0cd] transition" /></div>
+                                    <div class="flex flex-col"><label for="email" class="text-sm font-medium text-gray-700">Email Address</label><input type="email" id="email" name="email" value="${state.formData.email}" required class="mt-1 p-3 border border-gray-300 rounded-md focus:ring-[#00d0cd] focus:border-[#00d0cd] transition" /></div>
+                                    <div class="flex flex-col"><label for="phone" class="text-sm font-medium text-gray-700">Phone Number (Optional)</label><input type="tel" id="phone" name="phone" value="${state.formData.phone}" placeholder="e.g., +1234567890" class="mt-1 p-3 border border-gray-300 rounded-md focus:ring-[#00d0cd] focus:border-[#00d0cd] transition" /></div>
+                                    <div class="space-y-2"><label class="text-sm font-medium text-gray-700 block">Preferred Communication Method:</label><div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                                        ${['Email', 'Phone Call', 'WhatsApp'].map(opt => `<label class="flex items-center space-x-2 text-sm text-gray-600"><input type="checkbox" name="preferredCommunication" value="${opt}" ${state.formData.preferredCommunication.includes(opt) ? 'checked' : ''} class="form-checkbox h-4 w-4 text-[#00d0cd] rounded focus:ring-[#00d0cd]" /><span>${opt}</span></label>`).join('')}
+                                    </div></div>
+                                </section>`;
+                            break;
+                        case 'essentials':
+                            html = `
+                                <section class="space-y-6">
+                                    <h3 class="text-2xl font-bold text-[#191970] border-b-2 border-gray-200 pb-2">Trip Essentials</h3>
+                                    <div class="flex flex-col"><label for="sourceCity" class="text-sm font-medium text-gray-700">Source City</label><input type="text" id="sourceCity" name="sourceCity" value="${state.formData.sourceCity}" placeholder="e.g., Mumbai, India" class="mt-1 p-3 border border-gray-300 rounded-md focus:ring-[#00d0cd] focus:border-[#00d0cd] transition" /></div>
+                                    <div class="space-y-4"><label class="text-sm font-medium text-gray-700 block">Desired Destination(s):</label><div class="space-y-2"><label class="text-sm font-medium text-gray-700 block">Trip Type</label><div class="flex flex-wrap gap-4">
+                                        ${['single', 'multi-city'].map(opt => `<label class="flex items-center space-x-2 text-sm text-gray-600"><input type="radio" name="destinationType" value="${opt}" ${state.formData.destinationType === opt ? 'checked' : ''} class="form-radio h-4 w-4 text-[#00d0cd] focus:ring-[#00d0cd]" /><span>${opt}</span></label>`).join('')}
+                                    </div></div><div class="flex flex-col"><label for="destination" class="text-sm font-medium text-gray-700">Destination(s) - specify multiple if a ${state.formData.destinationType} trip</label><textarea id="destination" name="destination" rows="3" placeholder="e.g., Reykjavik, Iceland" class="mt-1 p-3 border border-gray-300 rounded-md focus:ring-[#00d0cd] focus:border-[#00d0cd] transition">${state.formData.destination}</textarea></div></div>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6"><div class="flex flex-col"><label for="startDate" class="text-sm font-medium text-gray-700">Start Date</label><input type="date" id="startDate" name="travelDates.startDate" value="${state.formData.travelDates.startDate}" class="mt-1 p-3 border border-gray-300 rounded-md focus:ring-[#00d0cd] focus:border-[#00d0cd] transition" /></div><div class="flex flex-col"><label for="endDate" class="text-sm font-medium text-gray-700">End Date</label><input type="date" id="endDate" name="travelDates.endDate" value="${state.formData.travelDates.endDate}" class="mt-1 p-3 border border-gray-300 rounded-md focus:ring-[#00d0cd] focus:border-[#00d0cd] transition" /></div></div>
+                                    <div class="flex flex-col"><label for="flexibleDates" class="text-sm font-medium text-gray-700">If flexible, please indicate preferred month/season</label><input type="text" id="flexibleDates" name="travelDates.flexibleDates" value="${state.formData.travelDates.flexibleDates}" placeholder="e.g., Summer 2025" class="mt-1 p-3 border border-gray-300 rounded-md focus:ring-[#00d0cd] focus:border-[#00d0cd] transition" /></div>
+                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6"><div class="flex flex-col"><label for="adults" class="text-sm font-medium text-gray-700">Adults (18+)</label><input type="number" id="adults" name="travelers.adults" min="1" value="${state.formData.travelers.adults}" class="mt-1 p-3 border border-gray-300 rounded-md focus:ring-[#00d0cd] focus:border-[#00d0cd] transition" /></div><div class="flex flex-col"><label for="childrenAges" class="text-sm font-medium text-gray-700">Children (Ages)</label><input type="text" id="childrenAges" name="travelers.childrenAges" value="${state.formData.travelers.childrenAges}" placeholder="e.g., 6, 10, 14" class="mt-1 p-3 border border-gray-300 rounded-md focus:ring-[#00d0cd] focus:border-[#00d0cd] transition" /></div><div class="flex flex-col"><label for="infants" class="text-sm font-medium text-gray-700">Infants (Under 2)</label><input type="number" id="infants" name="travelers.infants" min="0" value="${state.formData.travelers.infants}" class="mt-1 p-3 border border-gray-300 rounded-md focus:ring-[#00d0cd] focus:border-[#00d0cd] transition" /></div></div>
+                                </section>`;
+                            break;
+                        case 'style':
+                            html = `
+                                <section class="space-y-6">
+                                    <h3 class="text-2xl font-bold text-[#191970] border-b-2 border-gray-200 pb-2">Your Travel Style & Preferences</h3>
+                                    <div class="space-y-2"><label class="text-sm font-medium text-gray-700 block">Who are you traveling with? (Select all that apply)</label><div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                                        ${['Solo', 'Partner/Spouse', 'Family with young children', 'Family with teenagers', 'Friends', 'Colleagues/Business Trip', 'Other'].map(opt => `<label class="flex items-center space-x-2 text-sm text-gray-600"><input type="checkbox" name="travelingWith" value="${opt}" ${state.formData.travelingWith.includes(opt) ? 'checked' : ''} class="form-checkbox h-4 w-4 text-[#00d0cd] rounded focus:ring-[#00d0cd]" /><span>${opt}</span></label>`).join('')}
+                                    </div></div>
+                                    ${state.formData.travelingWith.includes('Other') ? `<div class="flex flex-col"><label for="travelingWithOther" class="text-sm font-medium text-gray-700">Please specify</label><input type="text" id="travelingWithOther" name="travelingWithOther" value="${state.formData.travelingWithOther}" class="mt-1 p-3 border border-gray-300 rounded-md focus:ring-[#00d0cd] focus:border-[#00d0cd] transition" /></div>` : ''}
+                                    <div class="space-y-2"><label class="text-sm font-medium text-gray-700 block">What is your preferred travel pace?</label><div class="flex flex-wrap gap-4">
+                                        ${['Relaxed', 'Moderate', 'Active', 'Adventure-packed'].map(opt => `<label class="flex items-center space-x-2 text-sm text-gray-600"><input type="radio" name="travelPace" value="${opt}" ${state.formData.travelPace === opt ? 'checked' : ''} class="form-radio h-4 w-4 text-[#00d0cd] focus:ring-[#00d0cd]" /><span>${opt}</span></label>`).join('')}
+                                    </div></div>
+                                    <div class="space-y-2"><label class="text-sm font-medium text-gray-700 block">What is your general budget comfort level? (per person, excluding flights)</label><div class="flex flex-wrap gap-4">
+                                        ${['Budget-Conscious', 'Mid-Range', 'Upscale', 'Luxury', 'Flexible'].map(opt => `<label class="flex items-center space-x-2 text-sm text-gray-600"><input type="radio" name="budget" value="${opt}" ${state.formData.budget === opt ? 'checked' : ''} class="form-radio h-4 w-4 text-[#00d0cd] focus:ring-[#00d0cd]" /><span>${opt}</span></label>`).join('')}
+                                    </div></div>
+                                    <div class="space-y-2"><label class="text-sm font-medium text-gray-700 block">Accommodation Preferences: (Select all that apply)</label><div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                                        ${['Hotels', 'Boutique Hotels', 'Resorts', 'Vacation Rentals', 'Unique Stays', 'Hostels/Guesthouses'].map(opt => `<label class="flex items-center space-x-2 text-sm text-gray-600"><input type="checkbox" name="accommodationPreferences" value="${opt}" ${state.formData.accommodationPreferences.includes(opt) ? 'checked' : ''} class="form-checkbox h-4 w-4 text-[#00d0cd] rounded focus:ring-[#00d0cd]" /><span>${opt}</span></label>`).join('')}
+                                    </div></div>
+                                    <div class="flex flex-col"><label for="specificAmenities" class="text-sm font-medium text-gray-700">Specific amenities (e.g., pool, gym, spa)</label><textarea id="specificAmenities" name="specificAmenities" rows="3" class="mt-1 p-3 border border-gray-300 rounded-md focus:ring-[#00d0cd] focus:border-[#00d0cd] transition">${state.formData.specificAmenities}</textarea></div>
+                                    <div class="space-y-2"><label class="text-sm font-medium text-gray-700 block">Preferred Dining Experiences: (Select all that apply)</label><div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                                        ${['Fine Dining / Michelin Star', 'Local Cuisine / Street Food', 'Casual Restaurants / Cafes'].map(opt => `<label class="flex items-center space-x-2 text-sm text-gray-600"><input type="checkbox" name="diningExperiences" value="${opt}" ${state.formData.diningExperiences.includes(opt) ? 'checked' : ''} class="form-checkbox h-4 w-4 text-[#00d0cd] rounded focus:ring-[#00d0cd]" /><span>${opt}</span></label>`).join('')}
+                                    </div></div>
+                                    <div class="flex flex-col"><label for="dietaryRestrictions" class="text-sm font-medium text-gray-700">Any Dietary Restrictions/Allergies?</label><textarea id="dietaryRestrictions" name="dietaryRestrictions" rows="3" placeholder="e.g., Vegetarian, Vegan, Halal, Gluten-Free, Kosher" class="mt-1 p-3 border border-gray-300 rounded-md focus:ring-[#00d0cd] focus:border-[#00d0cd] transition">${state.formData.dietaryRestrictions}</textarea></div>
+                                </section>`;
+                            break;
+                        case 'interests':
+                            html = `
+                                <section class="space-y-6">
+                                    <h3 class="text-2xl font-bold text-[#191970] border-b-2 border-gray-200 pb-2">Your Interests & Desired Experiences</h3>
+                                    <div class="space-y-2"><label class="text-sm font-medium text-gray-700 block">What are your primary interests for this trip? (Select all that apply)</label><div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                                        ${['Culture & History', 'Food & Drink', 'Nature & Outdoors', 'Adventure & Sports', 'Relaxation & Wellness', 'Art & Design', 'Shopping & Fashion', 'Nightlife & Entertainment', 'Family-Friendly Activities', 'Photography', 'Philanthropic/Volunteering opportunities', 'Other'].map(opt => `<label class="flex items-center space-x-2 text-sm text-gray-600"><input type="checkbox" name="primaryInterests" value="${opt}" ${state.formData.primaryInterests.includes(opt) ? 'checked' : ''} class="form-checkbox h-4 w-4 text-[#00d0cd] rounded focus:ring-[#00d0cd]" /><span>${opt}</span></label>`).join('')}
+                                    </div></div>
+                                    ${state.formData.primaryInterests.includes('Other') ? `<div class="flex flex-col"><label for="primaryInterestsOther" class="text-sm font-medium text-gray-700">Please specify other interests</label><input type="text" id="primaryInterestsOther" name="primaryInterestsOther" value="${state.formData.primaryInterestsOther}" class="mt-1 p-3 border border-gray-300 rounded-md focus:ring-[#00d0cd] focus:border-[#00d0cd] transition" /></div>` : ''}
+                                    <div class="flex flex-col"><label for="mustSee" class="text-sm font-medium text-gray-700">Are there any specific 'must-see' landmarks, attractions, or activities?</label><textarea id="mustSee" name="mustSee" rows="3" class="mt-1 p-3 border border-gray-300 rounded-md focus:ring-[#00d0cd] focus:border-[#00d0cd] transition">${state.formData.mustSee}</textarea></div>
+                                    <div class="flex flex-col"><label for="avoid" class="text-sm font-medium text-gray-700">Are there any activities, places, or experiences you absolutely want to AVOID?</label><textarea id="avoid" name="avoid" rows="3" class="mt-1 p-3 border border-gray-300 rounded-md focus:ring-[#00d0cd] focus:border-[#00d0cd] transition">${state.formData.avoid}</textarea></div>
+                                    <div class="space-y-2"><label class="text-sm font-medium text-gray-700 block">Do you prefer:</label><div class="flex flex-wrap gap-4">
+                                        ${['Guided tours with a group', 'Private guided tours', 'Self-guided exploration', 'A mix of the above'].map(opt => `<label class="flex items-center space-x-2 text-sm text-gray-600"><input type="radio" name="preferredTourStyle" value="${opt}" ${state.formData.preferredTourStyle === opt ? 'checked' : ''} class="form-radio h-4 w-4 text-[#00d0cd] focus:ring-[#00d0cd]" /><span>${opt}</span></label>`).join('')}
+                                    </div></div>
+                                    <div class="space-y-2"><label class="text-sm font-medium text-gray-700 block">How important is it to interact with locals and experience authentic culture?</label><div class="flex flex-wrap gap-4">
+                                        ${['Very Important', 'Moderately Important', 'Not a priority'].map(opt => `<label class="flex items-center space-x-2 text-sm text-gray-600"><input type="radio" name="localInteraction" value="${opt}" ${state.formData.localInteraction === opt ? 'checked' : ''} class="form-radio h-4 w-4 text-[#00d0cd] focus:ring-[#00d0cd]" /><span>${opt}</span></label>`).join('')}
+                                    </div></div>
+                                    <div class="flex flex-col"><label for="accessibilityNeeds" class="text-sm font-medium text-gray-700">Any specific mobility or accessibility needs we should be aware of?</label><textarea id="accessibilityNeeds" name="accessibilityNeeds" rows="3" placeholder="e.g., wheelchair accessible, limited walking, quiet environments" class="mt-1 p-3 border border-gray-300 rounded-md focus:ring-[#00d0cd] focus:border-[#00d0cd] transition">${state.formData.accessibilityNeeds}</textarea></div>
+                                    <div class="flex flex-col"><label for="otherInfo" class="text-sm font-medium text-gray-700">Is there anything else you'd like us to know?</label><textarea id="otherInfo" name="otherInfo" rows="3" placeholder="e.g., special occasions, desired atmosphere, unique requests" class="mt-1 p-3 border border-gray-300 rounded-md focus:ring-[#00d0cd] focus:border-[#00d0cd] transition">${state.formData.otherInfo}</textarea></div>
+                                    <div class="space-y-2"><label class="text-sm font-medium text-gray-700 block">How did you hear about Brilliant AI Plan&Trip?</label><div class="flex flex-wrap gap-4">
+                                        ${['Social Media', 'Friend/Family Referral', 'Online Search', 'Article/Blog', 'Event/Conference', 'Other'].map(opt => `<label class="flex items-center space-x-2 text-sm text-gray-600"><input type="radio" name="howDidYouHear" value="${opt}" ${state.formData.howDidYouHear === opt ? 'checked' : ''} class="form-radio h-4 w-4 text-[#00d0cd] focus:ring-[#00d0cd]" /><span>${opt}</span></label>`).join('')}
+                                    </div></div>
+                                    ${state.formData.howDidYouHear === 'Social Media' || state.formData.howDidYouHear === 'Other' ? `<div class="flex flex-col"><label for="howDidYouHearOther" class="text-sm font-medium text-gray-700">Please specify</label><input type="text" id="howDidYouHearOther" name="howDidYouHearOther" value="${state.formData.howDidYouHearOther}" class="mt-1 p-3 border border-gray-300 rounded-md focus:ring-[#00d0cd] focus:border-[#00d0cd] transition" /></div>` : ''}
+                                    <div class="mt-8 text-center text-gray-500 text-sm italic">
+                                        <p><strong>Privacy & Security Note:</strong> At Brilliant AI, your privacy and data security are paramount. The information you provide will be used solely for the purpose of crafting your personalized trip itinerary and enhancing your experience with our services, in accordance with our privacy policy.</p>
+                                    </div>
+                                </section>
+                                <div class="mt-8 text-right">
+                                    <button type="submit" id="submit-btn" class="px-8 py-4 bg-[#00d0cd] text-white font-extrabold rounded-full text-lg shadow-2xl hover:bg-opacity-80 transition-colors duration-300 transform hover:scale-105 active:scale-100">
+                                        Submit & Plan Your Trip
+                                    </button>
+                                </div>
+                            `;
+                            break;
+                    }
+                    form.innerHTML = html;
+                };
 
-                        const input = document.createElement('input');
-                        input.type = field.type;
-                        input.id = `${field.name}-${option.replace(/\s/g, '-')}`;
-                        input.name = field.name;
-                        input.value = option;
-                        input.classList.add('h-5', 'w-5', 'text-accent-color', 'border-gray-300', 'rounded-full', 'focus:ring-accent-color');
-                        
-                        const optionLabel = document.createElement('label');
-                        optionLabel.htmlFor = `${field.name}-${option.replace(/\s/g, '-')}`;
-                        optionLabel.textContent = option;
-                        optionLabel.classList.add('ml-3', 'block', 'text-gray-600', 'cursor-pointer');
+                const updateFormState = (e) => {
+                    const { name, value, type, checked } = e.target;
+                    
+                    if (type === 'checkbox') {
+                        const arr = state.formData[name] || [];
+                        state.formData[name] = checked ? [...arr, value] : arr.filter(item => item !== value);
+                    } else if (name.includes('.')) {
+                        const [parent, child] = name.split('.');
+                        state.formData[parent][child] = value;
+                    } else {
+                        state.formData[name] = value;
+                    }
 
-                        optionGroup.appendChild(input);
-                        optionGroup.appendChild(optionLabel);
-                        formGroup.appendChild(optionGroup);
-                    });
+                    // This is a simple way to re-render the current form section after a change
+                    const activeSectionBtn = formNav.querySelector('.bg-[#00d0cd]');
+                    renderFormSection(activeSectionBtn.dataset.section);
+                };
+
+                formNav.addEventListener('click', (e) => {
+                    const button = e.target.closest('button');
+                    if (button) {
+                        formNav.querySelectorAll('button').forEach(btn => {
+                            btn.classList.remove('bg-[#00d0cd]', 'text-white', 'shadow-md');
+                            btn.classList.add('bg-transparent', 'text-[#191970]', 'hover:bg-gray-200');
+                        });
+                        button.classList.add('bg-[#00d0cd]', 'text-white', 'shadow-md');
+                        button.classList.remove('bg-transparent', 'text-[#191970]', 'hover:bg-gray-200');
+                        renderFormSection(button.dataset.section);
+                    }
+                });
+
+                form.addEventListener('change', updateFormState);
+                
+                form.addEventListener('submit', handleFormSubmission);
+                
+                document.getElementById('close-form-btn').addEventListener('click', () => {
+                    state.showFormModal = false;
+                    render();
+                });
+
+                renderFormSection('contact');
+            };
+
+            const renderLoadingModal = () => {
+                modalContainer.innerHTML = `
+                    <div id="loading-modal" class="fixed inset-0 z-[150] bg-black bg-opacity-75 flex items-center justify-center p-4 animate-fade-in">
+                        <div class="bg-white p-8 rounded-lg shadow-xl text-center max-w-sm w-full">
+                            <div class="flex justify-center items-center mb-4">
+                                <div class="loader"></div>
+                            </div>
+                            <h3 class="text-2xl font-bold text-[#191970] mb-2">Generating Itinerary...</h3>
+                            <p class="text-gray-700">Please wait while our AI crafts your personalized trip.</p>
+                        </div>
+                    </div>
+                `;
+            };
+
+            const renderItineraryModal = () => {
+                modalContainer.innerHTML = `
+                    <div id="itinerary-modal" class="fixed inset-0 z-[100] bg-black bg-opacity-75 flex items-center justify-center p-4 overflow-y-auto animate-fade-in">
+                        <div class="bg-white rounded-lg shadow-2xl p-8 max-w-4xl w-full my-8 relative animate-fade-in-up">
+                            <button id="close-itinerary-btn" class="absolute top-4 right-4 text-[#191970] hover:text-gray-600 transition duration-200 z-50">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                            </button>
+                            <h2 class="text-3xl font-extrabold text-[#191970] mb-4 text-center">Your Custom AI Itinerary</h2>
+                            <div id="itinerary-content" class="modal-content-scroll overflow-y-auto p-4 border rounded-md bg-gray-50 markdown-content">
+                                <!-- Itinerary content will be inserted here -->
+                                ${marked.parse(state.generatedItinerary || 'Could not generate itinerary. Please try again.')}
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                document.getElementById('close-itinerary-btn').addEventListener('click', () => {
+                    state.showItineraryModal = false;
+                    render();
+                });
+            };
+
+            const renderAboutModal = () => {
+                modalContainer.innerHTML = `
+                    <div id="about-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-75 animate-fade-in">
+                        <div class="bg-[#191970] text-white rounded-xl shadow-2xl p-8 mx-auto text-left relative flex flex-col md:flex-row overflow-hidden w-full max-w-7xl h-[80vh]">
+                            <button id="close-about-btn" class="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors text-2xl">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                            </button>
+                            <aside class="w-full md:w-1/3 flex-shrink-0 bg-[#191970] p-6 rounded-l-xl md:rounded-r-none overflow-y-auto border-r border-[#00d0cd]/20 md:border-b-0">
+                                <h2 class="text-3xl font-bold mb-6 text-white">About Us</h2>
+                                <nav id="about-nav" class="space-y-4">
+                                    <button class="w-full text-left px-4 py-3 rounded-xl font-semibold transition-colors duration-200 hover:bg-white/20 ${state.aboutSection === 'introduction' ? 'bg-white text-[#191970]' : 'text-white'}" data-section="introduction">Introduction to Company</button>
+                                    <button class="w-full text-left px-4 py-3 rounded-xl font-semibold transition-colors duration-200 hover:bg-white/20 ${state.aboutSection === 'mission' ? 'bg-white text-[#191970]' : 'text-white'}" data-section="mission">Our Mission</button>
+                                    <button class="w-full text-left px-4 py-3 rounded-xl font-semibold transition-colors duration-200 hover:bg-white/20 ${state.aboutSection === 'vision' ? 'bg-white text-[#191970]' : 'text-white'}" data-section="vision">Our Vision</button>
+                                </nav>
+                            </aside>
+                            <div id="about-content" class="flex-grow p-6 text-justify overflow-y-auto">
+                                ${aboutSections[state.aboutSection]}
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                document.getElementById('close-about-btn').addEventListener('click', () => {
+                    state.showAboutModal = false;
+                    render();
+                });
+                document.getElementById('about-nav').addEventListener('click', (e) => {
+                    const button = e.target.closest('button');
+                    if (button) {
+                        state.aboutSection = button.dataset.section;
+                        render();
+                    }
+                });
+            };
+
+            const renderContactModal = () => {
+                modalContainer.innerHTML = `
+                    <div id="contact-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-75 animate-fade-in">
+                        <div class="bg-[#191970] text-white rounded-xl shadow-2xl p-8 mx-auto text-center relative max-w-lg w-full">
+                            <button id="close-contact-btn" class="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                            </button>
+                            <h2 class="text-3xl font-bold mb-4 text-[#00d0cd]">Get in Touch</h2>
+                            <p class="text-lg mb-6">We'd love to hear from you!</p>
+                            <div class="space-y-4">
+                                <a href="mailto:info@brilliantaitravel.com" class="flex items-center justify-center px-6 py-3 bg-[#00d0cd] text-[#191970] rounded-full font-bold hover:bg-white/80 transition-colors">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                                        <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
+                                        <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
+                                    </svg>
+                                    Email Us
+                                </a>
+                                <a href="#" class="flex items-center justify-center px-6 py-3 bg-white text-[#191970] rounded-full font-bold hover:bg-gray-200 transition-colors">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+                                    </svg>
+                                    Book a Free Consultation
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                document.getElementById('close-contact-btn').addEventListener('click', () => {
+                    state.showContactModal = false;
+                    render();
+                });
+            };
+
+            const handleFormSubmission = async (e) => {
+                e.preventDefault();
+                
+                // Close the form modal and show the loading screen
+                state.showFormModal = false;
+                state.isGenerating = true;
+                render();
+
+                // Construct the prompt for the AI
+                const prompt = createAIprompt(state.formData);
+                console.log("Sending prompt to AI:", prompt);
+
+                // API call to the Gemini model
+                const chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
+                const payload = { contents: chatHistory };
+                const apiKey = ""; 
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+
+                let retryCount = 0;
+                const maxRetries = 5;
+                const baseDelay = 1000;
+
+                while (retryCount < maxRetries) {
+                    try {
+                        const response = await fetch(apiUrl, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(payload)
+                        });
+
+                        if (response.status === 429) {
+                            const delay = baseDelay * Math.pow(2, retryCount);
+                            console.log(`Rate limit hit. Retrying in ${delay}ms...`);
+                            await new Promise(res => setTimeout(res, delay));
+                            retryCount++;
+                            continue;
+                        }
+
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+
+                        const result = await response.json();
+
+                        if (result.candidates && result.candidates.length > 0 &&
+                            result.candidates[0].content && result.candidates[0].content.parts &&
+                            result.candidates[0].content.parts.length > 0) {
+                            const generatedText = result.candidates[0].content.parts[0].text;
+                            state.generatedItinerary = generatedText;
+                            state.isGenerating = false;
+                            state.showItineraryModal = true;
+                            state.formData = { ...state.initialFormData }; // Reset form data
+                            render();
+                            return;
+                        } else {
+                            throw new Error("Invalid response structure from API.");
+                        }
+
+                    } catch (error) {
+                        console.error('Error generating itinerary:', error);
+                        state.isGenerating = false;
+                        state.generatedItinerary = `Failed to generate an itinerary. Please check the console for errors and try again. Error: ${error.message}`;
+                        state.showItineraryModal = true;
+                        render();
+                        return;
+                    }
                 }
-                formContent.appendChild(formGroup);
+                
+                // If max retries are reached
+                console.error('Max retries reached. Failed to fetch from API.');
+                state.isGenerating = false;
+                state.generatedItinerary = "Failed to generate an itinerary due to repeated API errors. Please try again later.";
+                state.showItineraryModal = true;
+                render();
+            };
+
+            // Simple Markdown parser for the generated itinerary
+            const marked = {
+                parse: function(markdownText) {
+                    // This is a very basic, custom markdown parser.
+                    let html = markdownText
+                        // Convert headings to h1, h2, h3
+                        .replace(/^### (.*$)/gim, '<h3>$1</h3>')
+                        .replace(/^## (.*$)/gim, '<h2>$1</h2>')
+                        .replace(/^# (.*$)/gim, '<h1>$1</h1>')
+                        // Convert bold text
+                        .replace(/\*\*(.*)\*\*/gim, '<strong>$1</strong>')
+                        // Convert bullet points to ul
+                        .replace(/^\* (.*$)/gim, '<li>$1</li>')
+                        // Convert to paragraphs for blocks of text
+                        .split('\n\n').map(p => {
+                            if (!p.startsWith('<h') && !p.startsWith('<li>')) {
+                                return `<p>${p.replace(/\n/g, '<br>')}</p>`;
+                            }
+                            return p;
+                        }).join('');
+
+                    // Wrap list items in a ul tag
+                    if (html.includes('<li>')) {
+                        html = `<ul>${html}</ul>`;
+                    }
+
+                    return html;
+                }
+            };
+            
+            // --- Event Listeners and Initial Render ---
+
+            // Main nav links
+            document.querySelectorAll('header nav a, header nav button').forEach(el => {
+                el.addEventListener('click', (e) => {
+                    if (e.target.dataset.action === 'home') {
+                        state.activeCategory = null;
+                        state.activeSubSection = null;
+                        render();
+                    } else if (e.target.dataset.modal) {
+                        const modalName = e.target.dataset.modal;
+                        state.showFormModal = false;
+                        state.showAboutModal = false;
+                        state.showContactModal = false;
+                        state.showItineraryModal = false;
+                        state[`show${modalName.charAt(0).toUpperCase() + modalName.slice(1)}Modal`] = true;
+                        render();
+                    }
+                });
             });
 
-            // Add a submit button to the last section
-            if (section === Object.keys(personalizationFormData).slice(-1)[0]) {
-                const submitButton = document.createElement('button');
-                submitButton.textContent = "Submit Request";
-                submitButton.classList.add('prominent-btn', 'w-full', 'text-white', 'font-bold', 'py-4', 'px-8', 'rounded-full', 'shadow-lg', 'text-lg', 'mt-8');
-                submitButton.type = "submit";
-                formContent.appendChild(submitButton);
-            }
-        }
-        
-        // Modal functions
-        function showModal(id) {
-            document.getElementById(id).classList.remove('hidden');
-            if (id === 'personalize-modal') {
-                renderFormSections();
-            }
-        }
-
-        function closeModal(id) {
-            document.getElementById(id).classList.add('hidden');
-        }
-
-        // About Us menu functionality
-        aboutSectionsMenu.addEventListener('click', (event) => {
-            let btn = event.target.closest('.about-menu-btn');
-            if (btn) {
-                // Remove active class from all buttons and add to the clicked one
-                document.querySelectorAll('.about-menu-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-
-                // Hide all sections and show the relevant one
-                document.querySelectorAll('.about-section').forEach(s => s.classList.add('hidden'));
-                document.getElementById(btn.dataset.section).classList.remove('hidden');
-            }
+            // Mobile menu button
+            menuBtn.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+            
+            // Initial render
+            render();
         });
     </script>
 </body>
