@@ -134,7 +134,8 @@
 
         @media (min-width: 768px) {
             #about-modal .modal-content {
-                max-width: 50vw;
+                max-width: 70vw;
+                display: flex;
             }
             #personalize-modal .modal-content {
                 max-width: 70vw;
@@ -174,7 +175,37 @@
         .form-section-btn.active {
             @apply bg-accent-color text-primary-bg;
         }
+        
+        /* Carousel Navigation Buttons Styling */
+        .carousel-nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 20;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            padding: 1rem;
+            border-radius: 9999px; /* full rounded */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            opacity: 0.8;
+        }
+        .carousel-nav-btn:hover {
+            background-color: rgba(0, 0, 0, 0.7);
+            opacity: 1;
+        }
 
+        /* About Us Menu Styling - UPDATED */
+        .about-menu-btn {
+            @apply w-full text-left px-4 py-3 rounded-xl font-semibold transition-colors duration-200 text-text-white hover:bg-white/20;
+        }
+
+        .about-menu-btn.active {
+            @apply bg-white text-primary-bg;
+        }
     </style>
 </head>
 <body class="fixed-screen-container">
@@ -254,15 +285,26 @@
 
     <!-- Modals (Initially Hidden) -->
     <div id="about-modal" class="modal fixed inset-0 z-50 flex items-center justify-center p-4 hidden">
-        <div class="modal-content bg-secondary-bg rounded-xl shadow-2xl p-8 mx-auto text-left relative text-primary-bg flex flex-col justify-center">
-            <button onclick="closeModal('about-modal')" class="absolute top-4 right-4 text-gray-500 hover:text-primary-bg transition-colors text-2xl">
+        <div class="modal-content bg-primary-bg/40 rounded-xl shadow-2xl p-8 mx-auto text-left relative text-text-white flex flex-col md:flex-row overflow-hidden">
+            <button onclick="closeModal('about-modal')" class="absolute top-4 right-4 text-gray-400 hover:text-text-white transition-colors text-2xl">
                 <i class="fas fa-times"></i>
             </button>
-            <h2 class="text-4xl font-bold text-center mb-6">About Us</h2>
-            <div class="space-y-6 text-lg">
-                <div class="py-2">
+            
+            <!-- Left Sidebar (Menu) -->
+            <aside class="w-full md:w-1/3 flex-shrink-0 bg-primary-bg/40 p-6 rounded-l-xl md:rounded-r-none overflow-y-auto border-r border-accent-color/20 md:border-b-0">
+                <h2 class="text-3xl font-bold mb-6 text-text-white">About Us</h2>
+                <nav id="about-sections-menu" class="space-y-4">
+                    <button class="about-menu-btn active" data-section="introduction">Introduction to Company</button>
+                    <button class="about-menu-btn" data-section="mission">Our Mission</button>
+                    <button class="about-menu-btn" data-section="vision">Our Vision</button>
+                </nav>
+            </aside>
+            
+            <!-- Right Content (Text) -->
+            <div id="about-content" class="w-full md:w-2/3 p-6 overflow-y-auto">
+                <div id="introduction" class="about-section">
                     <h3 class="text-2xl font-semibold text-accent-color text-center mb-2">Introduction to Company</h3>
-                    <p class="mt-2 text-gray-700 text-justify">
+                    <p class="mt-2 text-justify">
                         The future of personalized experiences is here.
                         <br><br>
                         We're building a world where your digital life companion truly understands you, anticipating needs and orchestrating perfect experiences securely. That's the vision driving Brilliant AI.
@@ -274,15 +316,15 @@
                         Learn more at website link: <a href="https://brilliantaitravelandexpedition.com/" target="_blank" class="text-accent-color hover:underline">https://brilliantaitravelandexpedition.com/</a>
                     </p>
                 </div>
-                <div class="py-2">
+                <div id="mission" class="about-section hidden">
                     <h3 class="text-2xl font-semibold text-accent-color text-center mb-2">Our Mission</h3>
-                    <p class="mt-2 text-gray-700 text-justify">
+                    <p class="mt-2 text-justify">
                         To empower modern travellers and lifestyle planners with hyper-personalized, seamless, and secure digital experiences, transforming the way they plan, experience, and share their travel journeys and life events. Our purpose is to make complex travel and event planning effortless, enjoyable, and uniquely tailored to each individual, leveraging cutting-edge AI.
                     </p>
                 </div>
-                <div class="py-2">
+                <div id="vision" class="about-section hidden">
                     <h3 class="text-2xl font-semibold text-accent-color text-center mb-2">Our Vision</h3>
-                    <p class="mt-2 text-gray-700 text-justify">
+                    <p class="mt-2 text-justify">
                         To create a future where every journey and life event is effortlessly unique, deeply enriching, and perfectly tailored through intelligent technology. We aim to serve hundreds of millions of travellers, significantly grow our market share, and lead the development of sustainable tourism, leaving a lasting legacy in the travel world.
                     </p>
                 </div>
@@ -425,6 +467,10 @@
         const subSectionsMenu = document.getElementById('sub-sections-menu');
         const subSectionContent = document.getElementById('sub-section-content');
         const subSectionTitle = document.getElementById('sub-section-title');
+        
+        // About Us form elements
+        const aboutSectionsMenu = document.getElementById('about-sections-menu');
+        const aboutContent = document.getElementById('about-content');
 
         // Form elements
         const formSectionsMenu = document.getElementById('form-sections-menu');
@@ -470,7 +516,7 @@
                 { type: "checkbox", label: "How did you hear about Brilliant AI Plan&Trip?", name: "howFoundUs", options: ["Social Media (Specify platform)", "Friend/Family Referral", "Online Search", "Article/Blog", "Event/Conference", "Other"] }
             ]
         };
-        
+
         // Function to handle category card clicks
         categoriesContainer.addEventListener('click', (event) => {
             let card = event.target.closest('.card');
@@ -494,7 +540,7 @@
                         subSectionsView.classList.add('fade-in-up');
                         
                         subSectionTitle.textContent = data.title;
-                        renderSubSections(data);
+                        renderSubSections(data, category);
                     }, 500); // Match fadeOutDown animation duration
                 }, 1000); // Duration of the revolving animation
             }
@@ -532,7 +578,7 @@
         }
 
         // Function to render the sub-section buttons and initial content
-        function renderSubSections(data) {
+        function renderSubSections(data, category) {
             subSectionsMenu.innerHTML = '';
             subSectionContent.innerHTML = '';
 
@@ -543,7 +589,7 @@
                 button.classList.add('px-6', 'py-2', 'bg-accent-color/20', 'rounded-full', 'font-semibold', 'hover:bg-accent-color', 'transition-colors');
                 button.dataset.location = key;
                 button.addEventListener('click', () => {
-                    renderCarousel(data.subSections[key]);
+                    renderCarousel(data.subSections[key], `${category}-${key}`);
                     // Update active state of buttons
                     document.querySelectorAll('#sub-sections-menu button').forEach(btn => btn.classList.remove('bg-accent-color'));
                     button.classList.add('bg-accent-color');
@@ -558,26 +604,56 @@
             }
         }
         
-        // Function to render the image carousel
-        function renderCarousel(items) {
+        // Function to render the image carousel with navigation
+        function renderCarousel(items, carouselId) {
             subSectionContent.innerHTML = '';
+            const carouselWrapperContainer = document.createElement('div');
+            carouselWrapperContainer.classList.add('relative', 'flex', 'items-center', 'w-full');
+
+            // Left Arrow Button
+            const leftBtn = document.createElement('button');
+            leftBtn.classList.add('carousel-nav-btn', 'left-0', 'ml-2');
+            leftBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>`;
+            leftBtn.onclick = () => scrollCarousel(carouselId, -1);
+            carouselWrapperContainer.appendChild(leftBtn);
+
             const carouselWrapper = document.createElement('div');
-            carouselWrapper.classList.add('carousel-container', 'flex', 'overflow-x-auto', 'space-x-4', 'p-4', 'snap-x', 'snap-mandatory');
+            carouselWrapper.id = carouselId; // Assign a unique ID for scrolling
+            carouselWrapper.classList.add('carousel-container', 'flex', 'overflow-x-auto', 'space-x-4', 'p-4', 'snap-x', 'snap-mandatory', 'w-full');
 
             items.forEach(item => {
                 const card = document.createElement('a');
+                card.classList.add('flex-shrink-0', 'w-[90vw]', 'md:min-w-[400px]', 'md:w-[450px]', 'snap-center', 'bg-accent-color/10', 'rounded-2xl', 'overflow-hidden', 'shadow-xl', 'hover:scale-105', 'transition-transform');
                 card.href = item.link;
-                card.classList.add('flex-shrink-0', 'w-[80vw]', 'md:w-96', 'snap-center', 'bg-accent-color/10', 'rounded-2xl', 'overflow-hidden', 'shadow-xl', 'hover:scale-105', 'transition-transform');
                 card.innerHTML = `
                     <img src="${item.image}" alt="${item.title}" class="carousel-item-image w-full">
-                    <div class="p-4 text-center">
-                        <h4 class="font-semibold text-lg text-text-white">${item.title}</h4>
-                        <p class="text-sm text-text-muted">View Itinerary</p>
+                    <div class="p-6 text-center">
+                        <h4 class="font-semibold text-xl text-text-white text-balance mb-2">${item.title}</h4>
+                        <p class="text-base text-text-muted">View Itinerary</p>
                     </div>
                 `;
                 carouselWrapper.appendChild(card);
             });
-            subSectionContent.appendChild(carouselWrapper);
+            
+            carouselWrapperContainer.appendChild(carouselWrapper);
+
+            // Right Arrow Button
+            const rightBtn = document.createElement('button');
+            rightBtn.classList.add('carousel-nav-btn', 'right-0', 'mr-2');
+            rightBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>`;
+            rightBtn.onclick = () => scrollCarousel(carouselId, 1);
+            carouselWrapperContainer.appendChild(rightBtn);
+            
+            subSectionContent.appendChild(carouselWrapperContainer);
+        }
+
+        // Function to scroll the carousel
+        function scrollCarousel(containerId, direction) {
+            const container = document.getElementById(containerId);
+            if (container) {
+                const scrollAmount = container.querySelector('a').offsetWidth + 16; // Card width + gap
+                container.scrollBy({ left: scrollAmount * direction, behavior: 'smooth' });
+            }
         }
 
         // Functions for the new personalization form
@@ -683,7 +759,20 @@
         function closeModal(id) {
             document.getElementById(id).classList.add('hidden');
         }
+
+        // About Us menu functionality
+        aboutSectionsMenu.addEventListener('click', (event) => {
+            let btn = event.target.closest('.about-menu-btn');
+            if (btn) {
+                // Remove active class from all buttons and add to the clicked one
+                document.querySelectorAll('.about-menu-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+
+                // Hide all sections and show the relevant one
+                document.querySelectorAll('.about-section').forEach(s => s.classList.add('hidden'));
+                document.getElementById(btn.dataset.section).classList.remove('hidden');
+            }
+        });
     </script>
 </body>
 </html>
-
