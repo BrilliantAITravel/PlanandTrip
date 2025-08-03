@@ -3,308 +3,686 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interactive Iceland Family Itinerary</title>
+    <title>Brilliant AI Travel & Expedition</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Chosen Palette: "Warm Neutrals & Cool Blues" -->
-    <!-- Application Structure Plan: A single-page dashboard layout is chosen for its clarity and user-friendliness. It allows users to quickly access different sections without navigating away from the main view. The structure includes: 1. A header with navigation links for smooth scrolling. 2. A "Trip Overview" section with key stats and an interactive cost chart. 3. An "Interactive Itinerary" section with clickable tabs for each day, revealing detailed plans. 4. A "Key Information" section with filterable cards for places, food, activities, and photography spots. 5. A "Travel Essentials" section for practical information like visa and shopping. This structure organizes the dense information into logical, digestible chunks, enhancing usability and making trip planning more intuitive than a linear document. -->
-    <!-- Visualization & Content Choices: 1. **Estimated Costs**: Goal: Compare cost components. Viz: Doughnut Chart (Chart.js). Interaction: Hover to see cost details. Ju... -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" xintegrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ99+H14l0qB6C3F7b4a2s+3tYyN1q5w6iJq5h5e2d6bF6bJj9J2j+3d6a2k9A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        :root {
+            --primary-bg: #191970; /* Dark Blue (40%) */
+            --secondary-bg: #F4F4F5; /* Light Gray (25%) */
+            --accent-color: #00d0cd; /* Turquoise (15%) */
+            --text-light: #F4ECE5; /* Off-White (10%) */
+            --text-muted: #D4D4D4; /* Light Gray (5%) */
+            --text-white: #FFFFFF; /* White (5%) */
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--primary-bg);
+            color: var(--text-white);
+            overflow: hidden;
+        }
+
+        .fixed-screen-container {
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .background-video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+        }
+
+        .card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            backdrop-filter: blur(5px);
+            background-color: rgba(25, 25, 112, 0.7);
+        }
+        
+        .card:hover {
+            transform: translateY(-8px) scale(1.05);
+            background-color: rgba(0, 208, 205, 0.2);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2), 0 4px 6px -2px rgba(0, 0, 0, 0.1);
+        }
+
+        .carousel-container {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        
+        .carousel-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        .fade-in-up {
+            animation: fadeInUp 0.8s ease-in-out;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-out-down {
+            animation: fadeOutDown 0.5s ease-in-out forwards;
+        }
+
+        @keyframes fadeOutDown {
+            from {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+        }
+
+        .revolve-animation {
+            animation: revolve 1.5s infinite linear;
+        }
+        
+        @keyframes revolve {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .social-link {
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+
+        .social-link:hover {
+            color: var(--accent-color);
+            transform: scale(1.1);
+        }
+
+        .modal {
+            background-color: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(8px);
+        }
+        
+        /* Adjusted modal content for no scrolling and better mobile fit */
+        #about-modal .modal-content, #personalize-modal .modal-content {
+            height: auto;
+            max-height: 90vh;
+            overflow-y: hidden;
+            width: 100%;
+            max-width: 90%;
+        }
+
+        @media (min-width: 768px) {
+            #about-modal .modal-content {
+                max-width: 50vw;
+            }
+            #personalize-modal .modal-content {
+                max-width: 70vw;
+                display: flex;
+            }
+        }
+
+        .card img {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+        }
+
+        .carousel-item-image {
+            width: 100%;
+            height: 200px; /* Increased height for larger carousels */
+            object-fit: cover;
+        }
+
+        .prominent-btn {
+            background: linear-gradient(45deg, #00d0cd, #00b0b0);
+            box-shadow: 0 4px 15px rgba(0, 208, 205, 0.4);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .prominent-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(0, 208, 205, 0.6);
+        }
+
+        .form-section-btn {
+            @apply w-full text-left px-4 py-3 rounded-xl font-semibold transition-colors duration-200;
+        }
+        
+        .form-section-btn.active {
+            @apply bg-accent-color text-primary-bg;
+        }
+
+    </style>
 </head>
-<body class="bg-gray-100 font-sans text-gray-800">
-    <!-- Header -->
-    <header class="bg-white shadow-md sticky top-0 z-50">
-        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
-            <a href="#" class="text-2xl font-bold text-indigo-600">Iceland Itinerary</a>
-            <!-- Desktop Nav -->
-            <nav class="hidden md:flex space-x-6">
-                <a href="#overview" class="text-gray-600 hover:text-indigo-600 transition-colors">Overview</a>
-                <a href="#itinerary" class="text-gray-600 hover:text-indigo-600 transition-colors">Itinerary</a>
-                <a href="#info" class="text-gray-600 hover:text-indigo-600 transition-colors">Key Info</a>
-                <a href="#essentials" class="text-gray-600 hover:text-indigo-600 transition-colors">Essentials</a>
-            </nav>
-            <!-- Mobile Menu Button -->
-            <button id="menu-btn" class="md:hidden text-gray-600 hover:text-indigo-600">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
-            </button>
+<body class="fixed-screen-container">
+
+    <!-- Static Background Video -->
+    <video autoplay muted loop class="background-video">
+        <source src="https://assets.mixkit.co/videos/preview/mixkit-beautiful-waterfall-in-the-forest-449-large.mp4" type="video/mp4">
+    </video>
+
+    <!-- Main Content Container -->
+    <main class="flex-grow flex flex-col justify-center items-center text-center px-4 bg-black bg-opacity-50">
+        
+        <!-- Header for navigation -->
+        <header class="absolute top-0 left-0 w-full p-6 flex justify-between items-center z-20">
+            <a href="#" onclick="backToCategories()" class="flex items-center space-x-2 cursor-pointer transition-colors hover:text-accent-color">
+                <img src="https://placehold.co/40x40/00d0cd/191970?text=Logo" alt="Brilliant AI Logo" class="h-8 w-8 rounded-full">
+                <h1 class="text-3xl font-bold text-white drop-shadow-lg">Brilliant AI</h1>
+            </a>
+            <div class="space-x-4">
+                <button onclick="showModal('about-modal')" class="px-4 py-2 bg-text-white text-primary-bg rounded-full font-semibold hover:bg-text-muted transition-all shadow-lg">About Us</button>
+                <button onclick="showModal('contact-modal')" class="px-4 py-2 bg-accent-color text-white rounded-full font-semibold hover:bg-[#00b0b0] transition-all shadow-lg">Contact Us</button>
+            </div>
+        </header>
+
+        <!-- Dynamic Content Section -->
+        <div id="dynamic-content-container" class="w-full max-w-6xl p-4">
+            <!-- Initial content with main categories -->
+            <div id="initial-view" class="fade-in-up">
+                <h2 class="text-5xl md:text-7xl font-bold text-white mb-4 drop-shadow-lg">Your Journey, Redefined.</h2>
+                <p class="text-xl md:text-2xl text-text-muted drop-shadow-lg max-w-2xl mx-auto mb-6 text-justify">Experience hyper-personalized travel planning with AI.</p>
+                
+                <!-- NEW: Personalize your travel button and text -->
+                <button onclick="showModal('personalize-modal')" class="prominent-btn text-white font-bold py-4 px-8 rounded-full shadow-lg text-lg mb-4">
+                    Personalize your Travel
+                </button>
+                <p class="text-lg text-text-light drop-shadow-lg max-w-xl mx-auto mb-12">
+                    Get Your Customized Itinerary Planned today
+                </p>
+
+                <div id="category-cards" class="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-6xl mx-auto">
+                    <div class="card p-8 rounded-2xl shadow-xl flex flex-col items-center text-center" data-category="family">
+                        <img src="https://placehold.co/400x250/F4F4F5/191970?text=Family" alt="Family Travel" class="w-full rounded-xl">
+                        <h3 class="text-2xl font-bold mb-2 mt-4">Family Travel</h3>
+                        <p class="text-text-muted text-justify">Create unforgettable memories with your loved ones.</p>
+                    </div>
+                    <div class="card p-8 rounded-2xl shadow-xl flex flex-col items-center text-center" data-category="solo">
+                        <img src="https://placehold.co/400x250/F4F4F5/191970?text=Solo" alt="Solo Travel" class="w-full rounded-xl">
+                        <h3 class="text-2xl font-bold mb-2 mt-4">Solo Travel</h3>
+                        <p class="text-text-muted text-justify">Discover yourself and the world on your own terms.</p>
+                    </div>
+                    <div class="card p-8 rounded-2xl shadow-xl flex flex-col items-center text-center" data-category="friends">
+                        <img src="https://placehold.co/400x250/F4F4F5/191970?text=Friends" alt="Travel with Friends" class="w-full rounded-xl">
+                        <h3 class="text-2xl font-bold mb-2 mt-4">Travel with Friends</h3>
+                        <p class="text-text-muted text-justify">Adventure, laughter, and new experiences await.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sub-categories and Carousel Section (Initially Hidden) -->
+            <div id="sub-sections-view" class="pt-[25px] w-full max-w-6xl hidden">
+                <div class="flex justify-between items-center mb-8">
+                    <h2 id="sub-section-title" class="text-4xl font-bold"></h2>
+                    <button onclick="backToCategories()" class="text-2xl text-text-muted hover:text-white transition-colors">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div id="sub-sections-menu" class="flex justify-center flex-wrap gap-4 mb-8">
+                    <!-- Sub-section buttons will be inserted here by JS -->
+                </div>
+                <div id="sub-section-content" class="min-h-[400px]">
+                    <!-- Carousel content will be inserted here by JS -->
+                </div>
+            </div>
         </div>
-        <!-- Mobile Menu -->
-        <div id="mobile-menu" class="hidden md:hidden bg-white shadow-md">
-            <nav class="flex flex-col space-y-2 p-4">
-                <a href="#overview" class="text-gray-600 hover:text-indigo-600 transition-colors">Overview</a>
-                <a href="#itinerary" class="text-gray-600 hover:text-indigo-600 transition-colors">Itinerary</a>
-                <a href="#info" class="text-gray-600 hover:text-indigo-600 transition-colors">Key Info</a>
-                <a href="#essentials" class="text-gray-600 hover:text-indigo-600 transition-colors">Essentials</a>
-            </nav>
-        </div>
-    </header>
-
-    <!-- Main Content -->
-    <main class="container mx-auto px-4 py-8 space-y-12">
-        <!-- Trip Overview Section -->
-        <section id="overview" class="bg-white p-6 rounded-lg shadow-md">
-            <h2 class="text-3xl font-bold text-gray-900 mb-4">Trip Overview</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
-                <!-- Stats -->
-                <div class="space-y-4">
-                    <div class="bg-indigo-100 p-4 rounded-lg flex items-center space-x-3">
-                        <svg class="w-8 h-8 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                        <div>
-                            <p class="text-sm text-gray-600">Trip Duration</p>
-                            <p class="text-xl font-semibold text-indigo-800">7 Days, 6 Nights</p>
-                        </div>
-                    </div>
-                    <div class="bg-indigo-100 p-4 rounded-lg flex items-center space-x-3">
-                        <svg class="w-8 h-8 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                        <div>
-                            <p class="text-sm text-gray-600">Main Destination</p>
-                            <p class="text-xl font-semibold text-indigo-800">Southern Iceland</p>
-                        </div>
-                    </div>
-                    <div class="bg-indigo-100 p-4 rounded-lg flex items-center space-x-3">
-                        <svg class="w-8 h-8 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V3m0 20v-5m0-13a9 9 0 110 18 9 9 0 010-18z"></path></svg>
-                        <div>
-                            <p class="text-sm text-gray-600">Estimated Total Cost</p>
-                            <p class="text-xl font-semibold text-indigo-800">$4,500</p>
-                        </div>
-                    </div>
-                </div>
-                <!-- Cost Chart -->
-                <div>
-                    <canvas id="costChart"></canvas>
-                </div>
-            </div>
-        </section>
-
-        <!-- Interactive Itinerary Section -->
-        <section id="itinerary" class="bg-white p-6 rounded-lg shadow-md">
-            <h2 class="text-3xl font-bold text-gray-900 mb-4">Interactive Itinerary</h2>
-            <!-- Day Tabs -->
-            <div class="flex flex-wrap justify-center md:justify-start gap-2 mb-6">
-                <button data-day="day1" class="day-tab px-4 py-2 rounded-full font-medium text-white bg-indigo-600 hover:bg-indigo-700 transition-colors">Day 1</button>
-                <button data-day="day2" class="day-tab px-4 py-2 rounded-full font-medium text-gray-600 bg-gray-200 hover:bg-gray-300 transition-colors">Day 2</button>
-                <button data-day="day3" class="day-tab px-4 py-2 rounded-full font-medium text-gray-600 bg-gray-200 hover:bg-gray-300 transition-colors">Day 3</button>
-                <button data-day="day4" class="day-tab px-4 py-2 rounded-full font-medium text-gray-600 bg-gray-200 hover:bg-gray-300 transition-colors">Day 4</button>
-                <button data-day="day5" class="day-tab px-4 py-2 rounded-full font-medium text-gray-600 bg-gray-200 hover:bg-gray-300 transition-colors">Day 5</button>
-                <button data-day="day6" class="day-tab px-4 py-2 rounded-full font-medium text-gray-600 bg-gray-200 hover:bg-gray-300 transition-colors">Day 6</button>
-                <button data-day="day7" class="day-tab px-4 py-2 rounded-full font-medium text-gray-600 bg-gray-200 hover:bg-gray-300 transition-colors">Day 7</button>
-            </div>
-            <!-- Itinerary Content -->
-            <div id="itinerary-content" class="space-y-4">
-                <!-- Content will be injected here by JS -->
-            </div>
-        </section>
-
-        <!-- Key Information Section -->
-        <section id="info" class="bg-white p-6 rounded-lg shadow-md">
-            <h2 class="text-3xl font-bold text-gray-900 mb-4">Key Information</h2>
-            <!-- Filters -->
-            <div id="info-filters" class="flex flex-wrap justify-center md:justify-start gap-2 mb-6">
-                <button data-filter="all" class="filter-btn px-4 py-2 rounded-full font-medium text-white bg-indigo-600 hover:bg-indigo-700 transition-colors active">All</button>
-                <button data-filter="places" class="filter-btn px-4 py-2 rounded-full font-medium text-gray-600 bg-gray-200 hover:bg-gray-300 transition-colors">Places</button>
-                <button data-filter="food" class="filter-btn px-4 py-2 rounded-full font-medium text-gray-600 bg-gray-200 hover:bg-gray-300 transition-colors">Food</button>
-                <button data-filter="activities" class="filter-btn px-4 py-2 rounded-full font-medium text-gray-600 bg-gray-200 hover:bg-gray-300 transition-colors">Activities</button>
-                <button data-filter="photos" class="filter-btn px-4 py-2 rounded-full font-medium text-gray-600 bg-gray-200 hover:bg-gray-300 transition-colors">Photography</button>
-            </div>
-            <!-- Info Cards Grid -->
-            <div id="info-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- Cards will be injected here by JS -->
-            </div>
-        </section>
-
-        <!-- Travel Essentials Section -->
-        <section id="essentials" class="bg-white p-6 rounded-lg shadow-md">
-            <h2 class="text-3xl font-bold text-gray-900 mb-4">Travel Essentials</h2>
-            <div class="space-y-4">
-                <div class="flex items-center space-x-4">
-                    <img src="https://placehold.co/48x48/6366f1/ffffff?text=V" alt="Visa Icon" class="w-12 h-12 rounded-full">
-                    <div>
-                        <h3 class="text-xl font-semibold">Visa Information</h3>
-                        <p class="text-gray-600">Information about visa requirements for your family based on your country of residence.</p>
-                    </div>
-                </div>
-                <div class="flex items-center space-x-4">
-                    <img src="https://placehold.co/48x48/6366f1/ffffff?text=P" alt="Packing Icon" class="w-12 h-12 rounded-full">
-                    <div>
-                        <h3 class="text-xl font-semibold">Packing Checklist</h3>
-                        <p class="text-gray-600">A detailed checklist of essential items for a family trip to Iceland.</p>
-                    </div>
-                </div>
-                <div class="flex items-center space-x-4">
-                    <img src="https://placehold.co/48x48/6366f1/ffffff?text=S" alt="Shopping Icon" class="w-12 h-12 rounded-full">
-                    <div>
-                        <h3 class="text-xl font-semibold">Shopping & Souvenirs</h3>
-                        <p class="text-gray-600">A guide to local Icelandic products and popular souvenir shops.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
 
     </main>
 
-    <footer class="bg-gray-800 text-white text-center py-4 mt-8">
-        <p>© 2024 Interactive Iceland Itinerary. All rights reserved.</p>
-    </footer>
+    <!-- Modals (Initially Hidden) -->
+    <div id="about-modal" class="modal fixed inset-0 z-50 flex items-center justify-center p-4 hidden">
+        <div class="modal-content bg-secondary-bg rounded-xl shadow-2xl p-8 mx-auto text-left relative text-primary-bg flex flex-col justify-center">
+            <button onclick="closeModal('about-modal')" class="absolute top-4 right-4 text-gray-500 hover:text-primary-bg transition-colors text-2xl">
+                <i class="fas fa-times"></i>
+            </button>
+            <h2 class="text-4xl font-bold text-center mb-6">About Us</h2>
+            <div class="space-y-6 text-lg">
+                <div class="py-2">
+                    <h3 class="text-2xl font-semibold text-accent-color text-center mb-2">Introduction to Company</h3>
+                    <p class="mt-2 text-gray-700 text-justify">
+                        The future of personalized experiences is here.
+                        <br><br>
+                        We're building a world where your digital life companion truly understands you, anticipating needs and orchestrating perfect experiences securely. That's the vision driving Brilliant AI.
+                        <br><br>
+                        We're pioneering Agentic AI to transform how you plan, experience, and share – from hyper-personalized travel with Plan&Trip, to secure content management with Plan & Post, and culturally nuanced wedding planning with Plan & Marry.
+                        <br><br>
+                        We're not just building apps; we're building trust and enabling unparalleled convenience. Join us on this journey to redefine digital life.
+                        <br><br>
+                        Learn more at website link: <a href="https://brilliantaitravelandexpedition.com/" target="_blank" class="text-accent-color hover:underline">https://brilliantaitravelandexpedition.com/</a>
+                    </p>
+                </div>
+                <div class="py-2">
+                    <h3 class="text-2xl font-semibold text-accent-color text-center mb-2">Our Mission</h3>
+                    <p class="mt-2 text-gray-700 text-justify">
+                        To empower modern travellers and lifestyle planners with hyper-personalized, seamless, and secure digital experiences, transforming the way they plan, experience, and share their travel journeys and life events. Our purpose is to make complex travel and event planning effortless, enjoyable, and uniquely tailored to each individual, leveraging cutting-edge AI.
+                    </p>
+                </div>
+                <div class="py-2">
+                    <h3 class="text-2xl font-semibold text-accent-color text-center mb-2">Our Vision</h3>
+                    <p class="mt-2 text-gray-700 text-justify">
+                        To create a future where every journey and life event is effortlessly unique, deeply enriching, and perfectly tailored through intelligent technology. We aim to serve hundreds of millions of travellers, significantly grow our market share, and lead the development of sustainable tourism, leaving a lasting legacy in the travel world.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="contact-modal" class="modal fixed inset-0 z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-secondary-bg rounded-xl shadow-2xl p-8 max-w-xl mx-auto text-left relative text-primary-bg">
+            <button onclick="closeModal('contact-modal')" class="absolute top-4 right-4 text-gray-500 hover:text-primary-bg transition-colors text-2xl">
+                <i class="fas fa-times"></i>
+            </button>
+            <h2 class="text-4xl font-bold text-center mb-6">Get in Touch</h2>
+            <p class="text-center text-gray-700 mb-8 text-justify">
+                Connect with us on our social media platforms. I will add the links for you once you provide them.
+            </p>
+            <div class="flex justify-center space-x-6 text-4xl">
+                <a href="#" class="social-link text-gray-500 hover:text-accent-color" aria-label="WhatsApp">
+                    <i class="fab fa-whatsapp"></i>
+                </a>
+                <a href="#" class="social-link text-gray-500 hover:text-accent-color" aria-label="Instagram">
+                    <i class="fab fa-instagram"></i>
+                </a>
+                <a href="#" class="social-link text-gray-500 hover:text-accent-color" aria-label="Facebook">
+                    <i class="fab fa-facebook-f"></i>
+                </a>
+                <a href="#" class="social-link text-gray-500 hover:text-accent-color" aria-label="LinkedIn">
+                    <i class="fab fa-linkedin-in"></i>
+                </a>
+            </div>
+        </div>
+    </div>
 
-    <!-- Script for interactivity -->
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const data = {
-                costs: [
-                    { label: 'Flights', value: 1500 },
-                    { label: 'Accommodation', value: 1200 },
-                    { label: 'Car Rental', value: 700 },
-                    { label: 'Activities', value: 600 },
-                    { label: 'Food', value: 500 }
-                ],
-                itinerary: {
-                    day1: {
-                        title: 'Arrival in Reykjavik',
-                        activities: ['Pick up car from Keflavík Airport (KEF)', 'Drive to Reykjavik', 'Check into accommodation', 'Explore downtown Reykjavik']
-                    },
-                    day2: {
-                        title: 'Golden Circle Tour',
-                        activities: ['Visit Þingvellir National Park', 'Witness the eruptions at the Geysir Geothermal Area', 'Admire the Gullfoss waterfall']
-                    },
-                    day3: {
-                        title: 'South Coast Waterfalls',
-                        activities: ['Drive along the South Coast', 'Visit Seljalandsfoss waterfall (walk behind it!)', 'See the powerful Skógafoss waterfall']
-                    },
-                    day4: {
-                        title: 'Glaciers and Black Sand Beaches',
-                        activities: ['Explore the Sólheimajökull glacier', 'Walk on the black sand beach of Reynisfjara', 'See the basalt columns at Víkurfjara']
-                    },
-                    day5: {
-                        title: 'Jökulsárlón Glacier Lagoon',
-                        activities: ['Drive to the Jökulsárlón glacier lagoon', 'Take a boat tour (optional)', 'Walk on the Diamond Beach']
-                    },
-                    day6: {
-                        title: 'Return to Reykjavik',
-                        activities: ['Drive back towards Reykjavik', 'Relax in the Blue Lagoon (pre-booking essential)', 'Farewell dinner in Reykjavik']
-                    },
-                    day7: {
-                        title: 'Departure',
-                        activities: ['Enjoy a final Icelandic breakfast', 'Drive to Keflavík Airport (KEF)', 'Return car and fly home']
-                    }
-                },
-                info: [
-                    { type: 'places', title: 'Golden Circle', description: 'A popular tourist route in southern Iceland, covering three main sights: Þingvellir National Park, the Geysir Geothermal Area, and the Gullfoss waterfall.' },
-                    { type: 'food', title: 'Skyr', description: 'A cultured dairy product, similar to Greek yogurt, but with a milder flavor. A staple of the Icelandic diet.' },
-                    { type: 'activities', title: 'Glacier Hiking', description: 'Guided tours available on many of Iceland\'s glaciers. A unique and unforgettable experience.' },
-                    { type: 'photos', title: 'Northern Lights', description: 'Best viewed in winter, away from city lights. Use a camera with a long exposure setting.' },
-                    { type: 'places', title: 'Vík í Mýrdal', description: 'A charming village on the south coast, famous for its black sand beaches and basalt columns.' },
-                    { type: 'food', title: 'Lamb Soup (Kjötsúpa)', description: 'A hearty and traditional Icelandic lamb soup, perfect for warming up on a cold day.' },
-                    { type: 'activities', title: 'Blue Lagoon', description: 'A geothermal spa known for its milky-blue waters. A popular spot to relax before a flight. Must pre-book.' },
-                    { type: 'photos', title: 'Jökulsárlón Glacier Lagoon', description: 'Perfect for photographing icebergs and seals. The Diamond Beach nearby offers great shots of ice on black sand.' }
-                ]
-            };
-
-            // Cost Chart
-            const costCtx = document.getElementById('costChart').getContext('2d');
-            new Chart(costCtx, {
-                type: 'doughnut',
-                data: {
-                    labels: data.costs.map(c => c.label),
-                    datasets: [{
-                        data: data.costs.map(c => c.value),
-                        backgroundColor: ['#6366f1', '#a5b4fc', '#c7d2fe', '#e0e7ff', '#9ca3af'],
-                        hoverOffset: 4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            position: 'bottom',
-                        }
-                    }
-                }
-            });
-
-            // Itinerary
-            const itineraryContent = document.getElementById('itinerary-content');
-            const dayTabs = document.querySelectorAll('.day-tab');
-
-            const renderItinerary = (day) => {
-                const dayData = data.itinerary[day];
-                if (!dayData) return;
-                itineraryContent.innerHTML = `
-                    <h3 class="text-2xl font-semibold text-gray-900">${dayData.title}</h3>
-                    <ul class="list-disc list-inside space-y-1 text-lg text-gray-700">
-                        ${dayData.activities.map(activity => `<li>${activity}</li>`).join('')}
-                    </ul>
-                `;
-            };
-
-            dayTabs.forEach(tab => {
-                tab.addEventListener('click', (e) => {
-                    dayTabs.forEach(t => t.classList.remove('bg-indigo-600', 'text-white'));
-                    dayTabs.forEach(t => t.classList.add('bg-gray-200', 'text-gray-600'));
-                    e.target.classList.remove('bg-gray-200', 'text-gray-600');
-                    e.target.classList.add('bg-indigo-600', 'text-white');
-                    renderItinerary(e.target.dataset.day);
-                });
-            });
-
-            // Initial render
-            renderItinerary('day1');
-
-            // Key Information
-            const infoGrid = document.getElementById('info-grid');
-            const infoFilters = document.getElementById('info-filters');
-
-            const renderInfoCards = (filter = 'all') => {
-                infoGrid.innerHTML = ''; // Clear previous cards
-                const filteredData = data.info.filter(item => filter === 'all' || item.type === filter);
-                filteredData.forEach(item => {
-                    const card = document.createElement('div');
-                    card.className = 'bg-gray-50 p-5 rounded-lg shadow-sm border border-gray-200';
-                    card.innerHTML = `
-                        <p class="text-xs font-medium text-indigo-600 uppercase mb-2">${item.type}</p>
-                        <h3 class="text-xl font-semibold mb-2">${item.title}</h3>
-                        <p class="text-gray-600">${item.description}</p>
-                    `;
-                    infoGrid.appendChild(card);
-                });
-            };
-
-            infoFilters.addEventListener('click', (e) => {
-                if (e.target.classList.contains('filter-btn')) {
-                    infoFilters.querySelector('.active').classList.remove('active');
-                    e.target.classList.add('active');
-                    renderInfoCards(e.target.dataset.filter);
-                }
-            });
-
-            renderInfoCards();
+    <!-- NEW: Personalize Trip Form Modal -->
+    <div id="personalize-modal" class="modal fixed inset-0 z-50 flex items-center justify-center p-4 hidden">
+        <div class="modal-content bg-secondary-bg rounded-xl shadow-2xl p-8 mx-auto text-left relative text-primary-bg w-full max-w-5xl h-[80vh] flex flex-col md:flex-row overflow-hidden">
+            <button onclick="closeModal('personalize-modal')" class="absolute top-4 right-4 text-gray-500 hover:text-primary-bg transition-colors text-2xl z-10">
+                <i class="fas fa-times"></i>
+            </button>
             
-            // Mobile Menu
-            const menuBtn = document.getElementById('menu-btn');
-            const mobileMenu = document.getElementById('mobile-menu');
-            menuBtn.addEventListener('click', () => {
-                mobileMenu.classList.toggle('hidden');
+            <!-- Left Sidebar (Menu) -->
+            <aside class="w-full md:w-1/3 flex-shrink-0 bg-gray-100 p-6 rounded-l-xl md:rounded-r-none overflow-y-auto">
+                <h2 class="text-3xl font-bold mb-6 text-primary-bg">Personalize Your Trip</h2>
+                <nav id="form-sections-menu" class="space-y-4">
+                    <!-- Section buttons will be dynamically inserted here -->
+                </nav>
+            </aside>
+            
+            <!-- Right Content (Form) -->
+            <div id="form-content" class="w-full md:w-2/3 p-6 overflow-y-auto">
+                <!-- Form content will be dynamically inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const travelData = {
+            family: {
+                title: "Family Travel Plans",
+                subSections: {
+                    india: [
+                        { image: "https://placehold.co/400x300/00d0cd/191970?text=India+Family+Trip", link: "#", title: "Jaipur Adventure" },
+                        { image: "https://placehold.co/400x300/00d0cd/191970?text=Kerala+Backwaters", link: "#", title: "Kerala Backwaters" },
+                        { image: "https://placehold.co/400x300/00d0cd/191970?text=Goa+Beaches", link: "#", title: "Goa Beaches" }
+                    ],
+                    southAsia: [
+                        { image: "https://placehold.co/400x300/00d0cd/191970?text=Maldives+Family", link: "#", title: "Maldives Getaway" },
+                        { image: "https://placehold.co/400x300/00d0cd/191970?text=Thailand+Islands", link: "#", title: "Thailand Islands" }
+                    ],
+                    europe: [
+                        { image: "https://placehold.co/400x300/00d0cd/191970?text=Paris+with+Kids", link: "#", title: "Parisian Magic" },
+                        { image: "https://placehold.co/400x300/00d0cd/191970?text=Swiss+Alps", link: "#", title: "Swiss Alps" },
+                        { image: "https://placehold.co/400x300/00d0cd/191970?text=Iceland+Family", link: "#", title: "Iceland Adventure" }
+                    ],
+                    america: [
+                        { image: "https://placehold.co/400x300/00d0cd/191970?text=Florida+Family", link: "#", title: "Florida Fun" },
+                        { image: "https://placehold.co/400x300/00d0cd/191970?text=Canadian+Rockies", link: "#", title: "Canadian Rockies" }
+                    ],
+                    others: [
+                        { image: "https://placehold.co/400x300/00d0cd/191970?text=Australia+Adventure", link: "#", title: "Australian Outback" },
+                        { image: "https://placehold.co/400x300/00d0cd/191970?text=Egypt+Pyramids", link: "#", title: "Egyptian Pyramids" }
+                    ]
+                }
+            },
+            solo: {
+                title: "Solo Travel Plans",
+                subSections: {
+                    india: [
+                        { image: "https://placehold.co/400x300/00d0cd/191970?text=Goa+Solo", link: "#", title: "Goa Solo Trip" },
+                        { image: "https://placehold.co/400x300/00d0cd/191970?text=Ladakh+Himalayas", link: "#", title: "Ladakh Adventure" }
+                    ],
+                    southAsia: [
+                        { image: "https://placehold.co/400x300/00d0cd/191970?text=Nepal+Trek", link: "#", title: "Nepal Trek" },
+                        { image: "https://placehold.co/400x300/00d0cd/191970?text=Vietnam+Explore", link: "#", title: "Vietnam Exploration" }
+                    ],
+                    europe: [
+                        { image: "https://placehold.co/400x300/00d0cd/191970?text=Italian+Coast", link: "#", title: "Italian Coast" },
+                        { image: "https://placehold.co/400x300/00d0cd/191970?text=Iceland+Roadtrip", link: "#", title: "Iceland Roadtrip" }
+                    ],
+                    america: [
+                        { image: "https://placehold.co/400x300/00d0cd/191970?text=Peruvian+Hike", link: "#", title: "Peruvian Hike" },
+                        { image: "https://placehold.co/400x300/00d0cd/191970?text=Mexico+City", link: "#", title: "Mexico City" }
+                    ],
+                    others: [
+                        { image: "https://placehold.co/400x300/00d0cd/191970?text=Japan+Solo", link: "#", title: "Japanese Culture" },
+                        { image: "https://placehold.co/400x300/00d0cd/191970?text=New+Zealand+Hike", link: "#", title: "New Zealand Hike" }
+                    ]
+                }
+            },
+            friends: {
+                title: "Travel with Friends",
+                subSections: {
+                    india: [
+                        { image: "https://placehold.co/400x300/00d0cd/191970?text=Ladakh+Trip", link: "#", title: "Ladakh Bike Trip" },
+                        { image: "https://placehold.co/400x300/00d0cd/191970?text=Rishikesh+Rafting", link: "#", title: "Rishikesh Rafting" }
+                    ],
+                    southAsia: [
+                        { image: "https://placehold.co/400x300/00d0cd/191970?text=Bali+Friends", link: "#", title: "Bali Group Trip" },
+                        { image: "https://placehold.co/400x300/00d0cd/191970?text=Singapore+Fun", link: "#", title: "Singapore City Tour" }
+                    ],
+                    europe: [
+                        { image: "https://placehold.co/400x300/00d0cd/191970?text=Eurotrip", link: "#", title: "European Road Trip" },
+                        { image: "https://placehold.co/400x300/00d0cd/191970?text=Greek+Islands", link: "#", title: "Greek Island Hopping" }
+                    ],
+                    america: [
+                        { image: "https://placehold.co/400x300/00d0cd/191970?text=Vegas+Party", link: "#", title: "Las Vegas Fun" },
+                        { image: "https://placehold.co/400x300/00d0cd/191970?text=NYC+Explore", link: "#", title: "New York City" }
+                    ],
+                    others: [
+                        { image: "https://placehold.co/400x300/00d0cd/191970?text=Bora+Bora", link: "#", title: "Bora Bora Retreat" },
+                        { image: "https://placehold.co/400x300/00d0cd/191970?text=South+Africa", link: "#", title: "South African Safari" }
+                    ]
+                }
+            }
+        };
+
+        const initialView = document.getElementById('initial-view');
+        const categoriesContainer = document.getElementById('category-cards');
+        const subSectionsView = document.getElementById('sub-sections-view');
+        const subSectionsMenu = document.getElementById('sub-sections-menu');
+        const subSectionContent = document.getElementById('sub-section-content');
+        const subSectionTitle = document.getElementById('sub-section-title');
+
+        // Form elements
+        const formSectionsMenu = document.getElementById('form-sections-menu');
+        const formContent = document.getElementById('form-content');
+
+        // Data for the personalization form
+        const personalizationFormData = {
+            "Contact Information": [
+                { type: "text", label: "Full Name", id: "fullName", placeholder: "John Doe" },
+                { type: "email", label: "Email Address", id: "email", placeholder: "johndoe@example.com" },
+                { type: "tel", label: "Phone Number (Optional, for urgent communication)", id: "phoneNumber", placeholder: "+1-555-555-5555" },
+                { type: "radio", label: "Preferred Communication Method", name: "communicationMethod", options: ["Email", "Phone Call", "WhatsApp"] }
+            ],
+            "Trip Essentials": [
+                { type: "text", label: "Source City", id: "sourceCity", placeholder: "New York" },
+                { type: "textarea", label: "Desired Destination(s) (City, Country, Region – specify multiple if a multi-stop trip)", id: "destinations", placeholder: "e.g., Reykjavik, Iceland; Paris, France" },
+                { type: "date", label: "Start Date", id: "startDate" },
+                { type: "date", label: "End Date", id: "endDate" },
+                { type: "text", label: "If flexible, please indicate preferred month/season", id: "flexibleDates", placeholder: "e.g., Summer 2024" },
+                { type: "number", label: "Number of Adults (18+)", id: "adults", placeholder: "2" },
+                { type: "text", label: "Children (Ages, e.g., '6, 10, 14')", id: "childrenAges", placeholder: "e.g., 6, 10, 14" },
+                { type: "number", label: "Infants (Under 2)", id: "infants", placeholder: "0" }
+            ],
+            "Travel Style & Preferences": [
+                { type: "checkbox", label: "Who are you traveling with?", name: "travelingWith", options: ["Solo", "Partner/Spouse", "Family with young children", "Family with teenagers", "Friends", "Colleagues/Business Trip", "Other (Please specify)"] },
+                { type: "radio", label: "What is your preferred travel pace?", name: "travelPace", options: ["Relaxed (Plenty of downtime, slow exploration)", "Moderate (Good balance of activities and relaxation)", "Active (Packed itinerary, seeing as much as possible)", "Adventure-packed (Focus on thrilling activities)"] },
+                { type: "radio", label: "What is your general budget comfort level for this trip?", name: "budgetLevel", options: ["Budget-Conscious", "Mid-Range", "Upscale", "Luxury", "Flexible"] },
+                { type: "checkbox", label: "Accommodation Preferences:", name: "accommodation", options: ["Hotels (Standard/Chain)", "Boutique Hotels", "Resorts (All-inclusive, beachfront, etc.)", "Vacation Rentals", "Unique Stays", "Hostels/Guesthouses"] },
+                { type: "text", label: "Specific amenities (e.g., pool, gym, spa)", id: "amenities", placeholder: "e.g., heated pool, gym" },
+                { type: "checkbox", label: "Preferred Dining Experiences:", name: "dining", options: ["Fine Dining / Michelin Star", "Local Cuisine / Street Food", "Casual Restaurants / Cafes"] },
+                { type: "text", label: "Any Dietary Restrictions/Allergies?", id: "dietary", placeholder: "e.g., Vegetarian, Gluten-Free" }
+            ],
+            "Interests & Desired Experiences": [
+                { type: "checkbox", label: "What are your primary interests for this trip?", name: "interests", options: ["Culture & History", "Food & Drink", "Nature & Outdoors", "Adventure & Sports", "Relaxation & Wellness", "Art & Design", "Shopping & Fashion", "Nightlife & Entertainment", "Family-Friendly Activities", "Photography", "Philanthropic/Volunteering opportunities", "Other (Please specify)"] },
+                { type: "textarea", label: "Are there any specific 'must-see' landmarks, attractions, or activities for this trip?", id: "mustSee", placeholder: "e.g., Eiffel Tower, Great Wall of China" },
+                { type: "textarea", label: "Are there any activities, places, or experiences you absolutely want to AVOID?", id: "mustAvoid", placeholder: "e.g., crowded museums, extreme sports" },
+                { type: "radio", label: "Do you prefer:", name: "tourPreference", options: ["Guided tours with a group", "Private guided tours", "Self-guided exploration", "A mix of the above"] },
+                { type: "radio", label: "How important is it to interact with locals and experience authentic culture?", name: "localInteraction", options: ["Very Important", "Moderately Important", "Not a priority"] },
+                { type: "textarea", label: "Any specific mobility or accessibility needs we should be aware of?", id: "accessibility", placeholder: "e.g., wheelchair accessible, limited walking" },
+                { type: "textarea", label: "Is there anything else you'd like us to know?", id: "additionalInfo", placeholder: "e.g., celebrating a birthday" }
+            ],
+            "How you found us": [
+                { type: "checkbox", label: "How did you hear about Brilliant AI Plan&Trip?", name: "howFoundUs", options: ["Social Media (Specify platform)", "Friend/Family Referral", "Online Search", "Article/Blog", "Event/Conference", "Other"] }
+            ]
+        };
+        
+        // Function to handle category card clicks
+        categoriesContainer.addEventListener('click', (event) => {
+            let card = event.target.closest('.card');
+            if (card) {
+                const category = card.dataset.category;
+                const data = travelData[category];
+                
+                // Add a visual effect to the card while transitioning
+                card.innerHTML = `<i class="fas fa-spinner revolve-animation text-5xl text-accent-color my-10"></i>`;
+
+                // After a short delay for the animation
+                setTimeout(() => {
+                    // Animate out the initial view
+                    initialView.classList.remove('fade-in-up');
+                    initialView.classList.add('fade-out-down');
+    
+                    // Wait for the animation to finish before changing content
+                    setTimeout(() => {
+                        initialView.classList.add('hidden');
+                        subSectionsView.classList.remove('hidden');
+                        subSectionsView.classList.add('fade-in-up');
+                        
+                        subSectionTitle.textContent = data.title;
+                        renderSubSections(data);
+                    }, 500); // Match fadeOutDown animation duration
+                }, 1000); // Duration of the revolving animation
+            }
+        });
+
+        // Function to go back to the main categories
+        function backToCategories() {
+            // Restore initial card content
+            document.getElementById('category-cards').innerHTML = `
+                <div class="card p-8 rounded-2xl shadow-xl flex flex-col items-center text-center" data-category="family">
+                    <img src="https://placehold.co/400x250/F4F4F5/191970?text=Family" alt="Family Travel" class="w-full rounded-xl">
+                    <h3 class="text-2xl font-bold mb-2 mt-4">Family Travel</h3>
+                    <p class="text-text-muted text-justify">Create unforgettable memories with your loved ones.</p>
+                </div>
+                <div class="card p-8 rounded-2xl shadow-xl flex flex-col items-center text-center" data-category="solo">
+                    <img src="https://placehold.co/400x250/F4F4F5/191970?text=Solo" alt="Solo Travel" class="w-full rounded-xl">
+                    <h3 class="text-2xl font-bold mb-2 mt-4">Solo Travel</h3>
+                    <p class="text-text-muted text-justify">Discover yourself and the world on your own terms.</p>
+                </div>
+                <div class="card p-8 rounded-2xl shadow-xl flex flex-col items-center text-center" data-category="friends">
+                    <img src="https://placehold.co/400x250/F4F4F5/191970?text=Friends" alt="Travel with Friends" class="w-full rounded-xl">
+                    <h3 class="text-2xl font-bold mb-2 mt-4">Travel with Friends</h3>
+                    <p class="text-text-muted text-justify">Adventure, laughter, and new experiences await.</p>
+                </div>
+            `;
+
+            subSectionsView.classList.remove('fade-in-up');
+            subSectionsView.classList.add('fade-out-down');
+
+            setTimeout(() => {
+                subSectionsView.classList.add('hidden');
+                initialView.classList.remove('hidden', 'fade-out-down');
+                initialView.classList.add('fade-in-up');
+            }, 500);
+        }
+
+        // Function to render the sub-section buttons and initial content
+        function renderSubSections(data) {
+            subSectionsMenu.innerHTML = '';
+            subSectionContent.innerHTML = '';
+
+            const subSectionKeys = Object.keys(data.subSections);
+            subSectionKeys.forEach(key => {
+                const button = document.createElement('button');
+                button.textContent = key.charAt(0).toUpperCase() + key.slice(1);
+                button.classList.add('px-6', 'py-2', 'bg-accent-color/20', 'rounded-full', 'font-semibold', 'hover:bg-accent-color', 'transition-colors');
+                button.dataset.location = key;
+                button.addEventListener('click', () => {
+                    renderCarousel(data.subSections[key]);
+                    // Update active state of buttons
+                    document.querySelectorAll('#sub-sections-menu button').forEach(btn => btn.classList.remove('bg-accent-color'));
+                    button.classList.add('bg-accent-color');
+                });
+                subSectionsMenu.appendChild(button);
+            });
+            
+            // Trigger a click on the first sub-section to show initial content
+            const firstButton = subSectionsMenu.querySelector('button');
+            if (firstButton) {
+                firstButton.click();
+            }
+        }
+        
+        // Function to render the image carousel
+        function renderCarousel(items) {
+            subSectionContent.innerHTML = '';
+            const carouselWrapper = document.createElement('div');
+            carouselWrapper.classList.add('carousel-container', 'flex', 'overflow-x-auto', 'space-x-4', 'p-4', 'snap-x', 'snap-mandatory');
+
+            items.forEach(item => {
+                const card = document.createElement('a');
+                card.href = item.link;
+                card.classList.add('flex-shrink-0', 'w-[80vw]', 'md:w-96', 'snap-center', 'bg-accent-color/10', 'rounded-2xl', 'overflow-hidden', 'shadow-xl', 'hover:scale-105', 'transition-transform');
+                card.innerHTML = `
+                    <img src="${item.image}" alt="${item.title}" class="carousel-item-image w-full">
+                    <div class="p-4 text-center">
+                        <h4 class="font-semibold text-lg text-text-white">${item.title}</h4>
+                        <p class="text-sm text-text-muted">View Itinerary</p>
+                    </div>
+                `;
+                carouselWrapper.appendChild(card);
+            });
+            subSectionContent.appendChild(carouselWrapper);
+        }
+
+        // Functions for the new personalization form
+        function renderFormSections() {
+            formSectionsMenu.innerHTML = '';
+            const sections = Object.keys(personalizationFormData);
+            sections.forEach((section, index) => {
+                const button = document.createElement('button');
+                button.textContent = `Section ${index + 1}: ${section}`;
+                button.classList.add('form-section-btn', 'text-gray-700', 'hover:bg-accent-color/50');
+                button.dataset.section = section;
+                button.addEventListener('click', () => {
+                    renderFormContent(section);
+                    // Update active state
+                    document.querySelectorAll('.form-section-btn').forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                });
+                formSectionsMenu.appendChild(button);
+            });
+            // Show the first section by default
+            if (sections.length > 0) {
+                document.querySelector('.form-section-btn').click();
+            }
+        }
+
+        function renderFormContent(section) {
+            formContent.innerHTML = '';
+            const sectionData = personalizationFormData[section];
+            const title = document.createElement('h3');
+            title.textContent = section;
+            title.classList.add('text-3xl', 'font-bold', 'mb-6', 'text-primary-bg');
+            formContent.appendChild(title);
+            
+            sectionData.forEach(field => {
+                const formGroup = document.createElement('div');
+                formGroup.classList.add('mb-6');
+                
+                const label = document.createElement('label');
+                label.textContent = field.label;
+                label.htmlFor = field.id;
+                label.classList.add('block', 'text-lg', 'font-medium', 'text-gray-700', 'mb-2');
+                formGroup.appendChild(label);
+
+                if (field.type === "text" || field.type === "email" || field.type === "tel" || field.type === "date" || field.type === "number") {
+                    const input = document.createElement('input');
+                    input.type = field.type;
+                    input.id = field.id;
+                    input.name = field.id;
+                    input.placeholder = field.placeholder || '';
+                    input.classList.add('w-full', 'px-4', 'py-3', 'rounded-lg', 'bg-gray-50', 'border', 'border-gray-300', 'focus:outline-none', 'focus:ring-2', 'focus:ring-accent-color');
+                    formGroup.appendChild(input);
+                } else if (field.type === "textarea") {
+                    const textarea = document.createElement('textarea');
+                    textarea.id = field.id;
+                    textarea.name = field.id;
+                    textarea.rows = 4;
+                    textarea.placeholder = field.placeholder || '';
+                    textarea.classList.add('w-full', 'px-4', 'py-3', 'rounded-lg', 'bg-gray-50', 'border', 'border-gray-300', 'focus:outline-none', 'focus:ring-2', 'focus:ring-accent-color');
+                    formGroup.appendChild(textarea);
+                } else if (field.type === "radio" || field.type === "checkbox") {
+                    field.options.forEach(option => {
+                        const optionGroup = document.createElement('div');
+                        optionGroup.classList.add('flex', 'items-center', 'mb-2');
+
+                        const input = document.createElement('input');
+                        input.type = field.type;
+                        input.id = `${field.name}-${option.replace(/\s/g, '-')}`;
+                        input.name = field.name;
+                        input.value = option;
+                        input.classList.add('h-5', 'w-5', 'text-accent-color', 'border-gray-300', 'rounded-full', 'focus:ring-accent-color');
+                        
+                        const optionLabel = document.createElement('label');
+                        optionLabel.htmlFor = `${field.name}-${option.replace(/\s/g, '-')}`;
+                        optionLabel.textContent = option;
+                        optionLabel.classList.add('ml-3', 'block', 'text-gray-600', 'cursor-pointer');
+
+                        optionGroup.appendChild(input);
+                        optionGroup.appendChild(optionLabel);
+                        formGroup.appendChild(optionGroup);
+                    });
+                }
+                formContent.appendChild(formGroup);
             });
 
-            // Smooth scrolling for nav links
-            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-                anchor.addEventListener('click', function (e) {
-                    const href = this.getAttribute('href');
-                    if (href === '#') {
-                        // Prevent the default behavior (scrolling to the top of the page) for the logo link
-                        e.preventDefault();
-                        return;
-                    }
-                    e.preventDefault();
-                    document.querySelector(href).scrollIntoView({
-                        behavior: 'smooth'
-                    });
-                    // Close mobile menu on click
-                    if (!mobileMenu.classList.contains('hidden')) {
-                        mobileMenu.classList.add('hidden');
-                    }
-                });
-            });
-        });
+            // Add a submit button to the last section
+            if (section === Object.keys(personalizationFormData).slice(-1)[0]) {
+                const submitButton = document.createElement('button');
+                submitButton.textContent = "Submit Request";
+                submitButton.classList.add('prominent-btn', 'w-full', 'text-white', 'font-bold', 'py-4', 'px-8', 'rounded-full', 'shadow-lg', 'text-lg', 'mt-8');
+                submitButton.type = "submit";
+                formContent.appendChild(submitButton);
+            }
+        }
+        
+        // Modal functions
+        function showModal(id) {
+            document.getElementById(id).classList.remove('hidden');
+            if (id === 'personalize-modal') {
+                renderFormSections();
+            }
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.add('hidden');
+        }
     </script>
 </body>
 </html>
