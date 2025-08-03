@@ -3,16 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Brilliant AI Travel & Expedition Website v3.3</title>
+    <title>Brilliant AI Travel & Expedition Website v5.0</title>
     <!-- Tailwind CSS for styling -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts for the 'Inter' typeface -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" xintegrity="sha512-Fo3rlrZj/k7ujTnHg4C+Q5sXw/lqYyB6k5f9i5F/g+5d+u1Q6K9w5cK/T6LwL/y+QfL/Q5L/y/vQ5f8Q6Ew==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
         body {
             font-family: 'Inter', sans-serif;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            background-color: #0d1117; /* Dark background color to match the theme */
         }
 
         /* Custom animation keyframes for a smoother feel */
@@ -44,7 +50,7 @@
         .animate-fade-in {
             animation: fadeIn 0.3s ease-in-out forwards;
         }
-        
+
         /* Utility for max-height on scrollable modal content */
         .modal-content-scroll {
             max-height: calc(90vh - 4rem);
@@ -73,7 +79,7 @@
             font-weight: bold;
             margin-top: 1.5rem;
             margin-bottom: 0.5rem;
-            color: white; /* Changed text color for new background */
+            color: white;
         }
         .markdown-content h1 { font-size: 2.25rem; }
         .markdown-content h2 { font-size: 1.75rem; }
@@ -104,7 +110,7 @@
             transform: translateX(-50%) translateY(-50%);
             background-size: cover;
         }
-        
+
         /* Overlay to make text readable */
         .video-overlay {
             position: fixed;
@@ -114,6 +120,74 @@
             height: 100%;
             background: rgba(0, 0, 0, 0.4);
             z-index: -99;
+        }
+
+        /* Styling for the form, input fields, etc. */
+        .form-section {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        .form-section h3 {
+            font-weight: bold;
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+            color: #00d0cd;
+        }
+        .form-field-group {
+            display: grid;
+            gap: 1rem;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        }
+        .form-input-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: white;
+        }
+        .form-input, .form-textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            border: 1px solid #3b424e;
+            background-color: #191c21;
+            color: #f8f9fa;
+        }
+        .form-input:focus, .form-textarea:focus {
+            outline: none;
+            border-color: #00d0cd;
+            box-shadow: 0 0 0 2px rgba(0, 208, 205, 0.2);
+        }
+        .form-checkbox-label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+        .form-checkbox {
+            appearance: none;
+            width: 1.25rem;
+            height: 1.25rem;
+            border: 2px solid #5a6674;
+            border-radius: 0.25rem;
+            background-color: #191c21;
+            cursor: pointer;
+            position: relative;
+            margin-right: 0.5rem;
+        }
+        .form-checkbox:checked {
+            background-color: #00d0cd;
+            border-color: #00d0cd;
+        }
+        .form-checkbox:checked::before {
+            content: '\f00c'; /* Font Awesome check icon */
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            color: #191c21;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 0.75rem;
         }
     </style>
 </head>
@@ -126,7 +200,7 @@
         <div class="video-overlay"></div>
         <video id="video-background" autoplay muted loop playsinline>
             <!-- Placeholder video from a royalty-free source like Pexels -->
-            <source src="./video/bgvideo.mp4" type="video/mp4">
+            <source src="video/bgvideo.mp4" type="video/mp4">
             Your browser does not support the video tag.
         </video>
 
@@ -202,7 +276,7 @@
                     howDidYouHear: '', howDidYouHearOther: ''
                 }
             };
-            
+
             const travelData = {
                 family: {
                     title: "Family Travel Plans",
@@ -357,545 +431,528 @@
                     * **Other Info:** ${otherInfo || 'None specified'}
 
                     --- Itinerary Generation Instructions ---
-                    1.  **Start with a warm introduction.**
-                    2.  **Break down the itinerary by day.** Each day should have a clear heading.
-                    3.  **For each day, suggest specific activities, landmarks, and experiences.** Provide a brief description of each.
-                    4.  **Include recommendations for restaurants or local eateries** for at least one meal per day.
-                    5.  **Suggest a type of accommodation** that fits the budget and preferences.
-                    6.  **Conclude with a friendly closing remark.**
-                    7.  Format the response using Markdown. Use headings, bold text, and bullet points to make it easy to read. Do not include any extra text before the start of the itinerary.
+                    1. **Start with a warm introduction.**
+                    2. **Break down the itinerary by day.** Each day should have a clear heading.
+                    3. **For each day, suggest specific activities, landmarks, and experiences.** Provide a brief description of each.
+                    4. **Include recommendations for restaurants or local eateries** for at least one meal per day.
+                    5. **Suggest a type of accommodation** that fits the budget and preferences.
+                    6. **Conclude with a friendly closing remark.**
+                    7. Format the response using Markdown. Use headings, bold text, and bullet points to make it easy to read. Do not include any extra text before the start of the itinerary.
                 `;
                 return prompt;
             };
 
-            // Main rendering function that determines what to show
-            const render = () => {
-                mainContent.innerHTML = '';
-                
-                if (state.activeCategory) {
-                    renderSubsections();
-                } else {
-                    renderHeroAndCategories();
+            const parseFormData = () => {
+                const form = document.getElementById('trip-form');
+                if (!form) return;
+
+                const formData = new FormData(form);
+                const data = {};
+                for (let [key, value] of formData.entries()) {
+                    if (key.includes('[]')) {
+                        const baseKey = key.replace('[]', '');
+                        if (!data[baseKey]) {
+                            data[baseKey] = [];
+                        }
+                        data[baseKey].push(value);
+                    } else if (key.includes('.')) {
+                        const [parent, child] = key.split('.');
+                        if (!data[parent]) {
+                            data[parent] = {};
+                        }
+                        data[parent][child] = value;
+                    } else {
+                        data[key] = value;
+                    }
                 }
-                renderModals();
-            };
-
-            const renderHeroAndCategories = () => {
-                mainContent.innerHTML = `
-                    <!-- Hero Section -->
-                    <section class="text-center flex-grow flex flex-col justify-center items-center px-4 pt-20 pb-12 w-full">
-                        <h1 class="text-5xl md:text-7xl font-black text-white mb-4 drop-shadow-lg animate-fade-in-up">
-                            Your Journey, Reimagined by AI
-                        </h1>
-                        <p class="text-xl md:text-2xl text-gray-200 max-w-3xl mx-auto drop-shadow-lg mb-8 animate-fade-in-up-delay-1">
-                            Explore our hyper-personalized travel plans and itineraries.
-                        </p>
-                        <button id="start-planning-btn" class="bg-[#00d0cd] text-white px-8 py-4 rounded-full font-extrabold text-lg shadow-2xl hover:bg-opacity-80 transition-colors duration-300 transform hover:scale-105 active:scale-100 animate-fade-in-up-delay-2">
-                            Start Planning
-                        </button>
-                    </section>
-
-                    <!-- Content Section - Categories -->
-                    <section id="category-section" class="w-full max-w-7xl px-4 py-16 transition-all duration-500 transform opacity-100 scale-100 bg-gray-900/60 text-white rounded-xl shadow-2xl mt-8">
-                        <h2 class="text-4xl font-bold text-center mb-12 text-white">
-                            Our AI-Curated Plans
-                        </h2>
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                            <div class="group cursor-pointer rounded-xl overflow-hidden shadow-2xl hover:shadow-3xl transition-all duration-300 transform hover:-translate-y-2 bg-gray-800/80" data-category="family">
-                                <img src="https://placehold.co/400x300/191970/00d0cd?text=Family+Travel" alt="Family Travel" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300 rounded-t-xl" onerror="this.onerror=null;this.src='https://placehold.co/400x300/191970/00d0cd?text=Family+Travel'" />
-                                <div class="p-8">
-                                    <h3 class="text-2xl font-bold text-white text-center capitalize">
-                                        Family Travel Plans
-                                    </h3>
-                                </div>
-                            </div>
-                            <div class="group cursor-pointer rounded-xl overflow-hidden shadow-2xl hover:shadow-3xl transition-all duration-300 transform hover:-translate-y-2 bg-gray-800/80" data-category="solo">
-                                <img src="https://placehold.co/400x300/191970/00d0cd?text=Solo+Travel" alt="Solo Travel" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300 rounded-t-xl" onerror="this.onerror=null;this.src='https://placehold.co/400x300/191970/00d0cd?text=Solo+Travel'" />
-                                <div class="p-8">
-                                    <h3 class="text-2xl font-bold text-white text-center capitalize">
-                                        Solo Travel Plans
-                                    </h3>
-                                </div>
-                            </div>
-                            <div class="group cursor-pointer rounded-xl overflow-hidden shadow-2xl hover:shadow-3xl transition-all duration-300 transform hover:-translate-y-2 bg-gray-800/80" data-category="friends">
-                                <img src="https://placehold.co/400x300/191970/00d0cd?text=Friends+Trip" alt="Travel with Friends" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300 rounded-t-xl" onerror="this.onerror=null;this.src='https://placehold.co/400x300/191970/00d0cd?text=Friends+Trip'" />
-                                <div class="p-8">
-                                    <h3 class="text-2xl font-bold text-white text-center capitalize">
-                                        Travel with Friends
-                                    </h3>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
-                `;
-
-                // Add event listeners for the hero section
-                document.getElementById('start-planning-btn').addEventListener('click', () => {
-                    state.showFormModal = true;
-                    render();
-                });
-
-                // Add event listeners for categories using event delegation
-                const categorySection = document.getElementById('category-section');
-                categorySection.addEventListener('click', (e) => {
-                    const categoryDiv = e.target.closest('[data-category]');
-                    if (categoryDiv) {
-                        state.activeCategory = categoryDiv.dataset.category;
-                        state.activeSubSection = Object.keys(travelData[state.activeCategory].subSections)[0];
-                        render();
+                // Handle checkboxes separately for a cleaner data structure
+                const checkboxes = form.querySelectorAll('input[type="checkbox"]');
+                checkboxes.forEach(checkbox => {
+                    const name = checkbox.name.replace('[]', '');
+                    if (!data[name]) data[name] = [];
+                    if (checkbox.checked) {
+                        data[name].push(checkbox.value);
                     }
                 });
+
+                // Correctly parse childrenAges
+                if (data.travelers && data.travelers.childrenAges) {
+                    data.travelers.childrenAges = data.travelers.childrenAges.split(',').map(age => age.trim());
+                } else if (data.travelers) {
+                    data.travelers.childrenAges = [];
+                }
+
+                // Handle other fields
+                if (data.travelingWithOther && data.travelingWith.includes('Other')) {
+                    data.travelingWith = data.travelingWith.filter(item => item !== 'Other');
+                    data.travelingWith.push(data.travelingWithOther);
+                }
+                if (data.primaryInterestsOther && data.primaryInterests.includes('Other')) {
+                    data.primaryInterests = data.primaryInterests.filter(item => item !== 'Other');
+                    data.primaryInterests.push(data.primaryInterestsOther);
+                }
+                if (data.howDidYouHearOther && data.howDidYouHear.includes('Other')) {
+                    data.howDidYouHear = data.howDidYouHear.filter(item => item !== 'Other');
+                    data.howDidYouHear.push(data.howDidYouHearOther);
+                }
+
+                return data;
             };
 
-            const renderSubsections = () => {
-                const category = state.activeCategory;
-                const subSections = travelData[category].subSections;
-                const activeSubSectionData = subSections[state.activeSubSection] || [];
+            const handleFormSubmit = async (e) => {
+                e.preventDefault();
+                state.isGenerating = true;
+                state.generatedItinerary = null; // Clear previous itinerary
+                render();
 
-                mainContent.innerHTML = `
-                    <section class="w-full max-w-7xl px-4 py-16 transition-all duration-500 transform opacity-100 scale-100 bg-gray-900/60 text-white rounded-xl shadow-2xl mt-8">
-                        <button id="back-to-categories-btn" class="flex items-center text-white font-bold mb-8 hover:text-[#00d0cd] transition-colors">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-                            </svg>
-                            Back to Categories
-                        </button>
-                        <h2 class="text-4xl font-bold text-center mb-8 text-white">
-                            ${travelData[category].title}
-                        </h2>
-                        <div id="sub-section-buttons" class="flex flex-wrap justify-center gap-4 mb-8">
-                            ${Object.keys(subSections).map(subSection => `
-                                <button class="px-6 py-2 rounded-full font-semibold transition-colors duration-200 capitalize
-                                    ${state.activeSubSection === subSection ? 'bg-[#00d0cd] text-white shadow-md' : 'bg-gray-700 text-white hover:bg-gray-600'}"
-                                    data-subsection="${subSection}">
-                                    ${subSection.replace('southAsia', 'South Asia')}
-                                </button>
-                            `).join('')}
-                        </div>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-                            ${activeSubSectionData.map(plan => `
-                                <a href="${plan.link}" class="group block rounded-xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 bg-gray-800/80">
-                                    <img src="${plan.image}" alt="${plan.title}" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300" 
-                                    onerror="this.onerror=null;this.src='https://placehold.co/400x300/00d0cd/191970?text=${plan.title.replace(/\s/g, '+')}'" />
-                                    <div class="p-4">
-                                        <h3 class="text-xl font-semibold text-white">${plan.title}</h3>
-                                    </div>
-                                </a>
-                            `).join('')}
-                        </div>
-                    </section>
-                `;
+                const formData = parseFormData();
+                const prompt = createAIprompt(formData);
 
-                // Add event listeners for the subsection page
-                document.getElementById('back-to-categories-btn').addEventListener('click', () => {
-                    state.activeCategory = null;
-                    state.activeSubSection = null;
-                    render();
-                });
+                try {
+                    const apiKey = "";
+                    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+                    const payload = {
+                        contents: [{ role: "user", parts: [{ text: prompt }] }]
+                    };
 
-                document.getElementById('sub-section-buttons').addEventListener('click', (e) => {
-                    const button = e.target.closest('button');
-                    if (button) {
-                        state.activeSubSection = button.dataset.subsection;
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`API call failed with status: ${response.status}`);
+                    }
+
+                    const result = await response.json();
+                    if (result.candidates && result.candidates.length > 0 &&
+                        result.candidates[0].content && result.candidates[0].content.parts &&
+                        result.candidates[0].content.parts.length > 0) {
+                        state.generatedItinerary = result.candidates[0].content.parts[0].text;
+                        state.isGenerating = false;
+                        state.showFormModal = false;
+                        state.showItineraryModal = true;
+                        render();
+                    } else {
+                        console.error("Unexpected API response structure:", result);
+                        state.generatedItinerary = "An error occurred while generating your itinerary. Please try again.";
+                        state.isGenerating = false;
                         render();
                     }
-                });
-            };
-
-            const renderModals = () => {
-                modalContainer.innerHTML = '';
-                if (state.showFormModal) {
-                    renderFormModal();
-                } else if (state.showAboutModal) {
-                    renderAboutModal();
-                } else if (state.showContactModal) {
-                    renderContactModal();
-                } else if (state.showItineraryModal) {
-                    renderItineraryModal();
-                } else if (state.isGenerating) {
-                    renderLoadingModal();
+                } catch (error) {
+                    console.error("Error generating itinerary:", error);
+                    state.generatedItinerary = "An error occurred while generating your itinerary. Please try again.";
+                    state.isGenerating = false;
+                    render();
                 }
             };
-            
-            const renderFormModal = () => {
-                modalContainer.innerHTML = `
-                    <div id="form-modal" class="fixed inset-0 z-[100] bg-black bg-opacity-75 flex items-center justify-center p-4 overflow-y-auto animate-fade-in">
-                        <div class="bg-gray-900/60 text-white rounded-lg shadow-2xl p-8 max-w-7xl w-full my-8 relative flex flex-col md:flex-row animate-fade-in-up">
-                            <button id="close-form-btn" class="absolute top-4 right-4 text-white hover:text-gray-400 transition duration-200 z-50">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                            </button>
-                            <!-- Left Menu Panel -->
-                            <div id="form-nav" class="w-full md:w-1/3 flex-shrink-0 border-b md:border-b-0 md:border-r border-gray-700 pb-4 md:pr-8 md:pb-0">
-                                <h2 class="text-3xl font-extrabold text-white mb-6">Personalize Your Trip</h2>
-                                <nav class="space-y-4">
-                                    <button class="w-full text-left px-4 py-3 rounded-lg font-semibold transition-colors duration-200 bg-[#00d0cd] text-white shadow-md" data-section="contact">1. Your Contact Information</button>
-                                    <button class="w-full text-left px-4 py-3 rounded-lg font-semibold transition-colors duration-200 bg-transparent text-white hover:bg-gray-700" data-section="essentials">2. Trip Essentials</button>
-                                    <button class="w-full text-left px-4 py-3 rounded-lg font-semibold transition-colors duration-200 bg-transparent text-white hover:bg-gray-700" data-section="style">3. Your Travel Style & Preferences</button>
-                                    <button class="w-full text-left px-4 py-3 rounded-lg font-semibold transition-colors duration-200 bg-transparent text-white hover:bg-gray-700" data-section="interests">4. Your Interests & Desired Experiences</button>
-                                </nav>
-                            </div>
-                            <!-- Right Form Content Panel -->
-                            <div id="form-content" class="flex-grow pt-8 md:pt-0 md:pl-8 overflow-y-auto modal-content-scroll">
-                                <form id="travel-form" class="space-y-8"></form>
-                            </div>
-                        </div>
-                    </div>
-                `;
-                
-                const formNav = document.getElementById('form-nav');
-                const formContent = document.getElementById('form-content');
-                const form = document.getElementById('travel-form');
 
-                const renderFormSection = (sectionId) => {
-                    let html = '';
-                    switch (sectionId) {
-                        case 'contact':
-                            html = `
-                                <section class="space-y-6">
-                                    <h3 class="text-2xl font-bold text-white border-b-2 border-gray-700 pb-2">Your Contact Information</h3>
-                                    <div class="flex flex-col"><label for="fullName" class="text-sm font-medium text-gray-200">Full Name</label><input type="text" id="fullName" name="fullName" value="${state.formData.fullName}" required class="mt-1 p-3 border border-gray-700 rounded-md focus:ring-[#00d0cd] focus:border-[#00d0cd] transition bg-gray-800 text-white" /></div>
-                                    <div class="flex flex-col"><label for="email" class="text-sm font-medium text-gray-200">Email Address</label><input type="email" id="email" name="email" value="${state.formData.email}" required class="mt-1 p-3 border border-gray-700 rounded-md focus:ring-[#00d0cd] focus:border-[#00d0cd] transition bg-gray-800 text-white" /></div>
-                                    <div class="flex flex-col"><label for="phone" class="text-sm font-medium text-gray-200">Phone Number (Optional)</label><input type="tel" id="phone" name="phone" value="${state.formData.phone}" placeholder="e.g., +1234567890" class="mt-1 p-3 border border-gray-700 rounded-md focus:ring-[#00d0cd] focus:border-[#00d0cd] transition bg-gray-800 text-white" /></div>
-                                    <div class="space-y-2"><label class="text-sm font-medium text-gray-200 block">Preferred Communication Method:</label><div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                                        ${['Email', 'Phone Call', 'WhatsApp'].map(opt => `<label class="flex items-center space-x-2 text-sm text-gray-200"><input type="checkbox" name="preferredCommunication" value="${opt}" ${state.formData.preferredCommunication.includes(opt) ? 'checked' : ''} class="form-checkbox h-4 w-4 text-[#00d0cd] rounded focus:ring-[#00d0cd]" /><span>${opt}</span></label>`).join('')}
-                                    </div></div>
-                                </section>`;
-                            break;
-                        case 'essentials':
-                            html = `
-                                <section class="space-y-6">
-                                    <h3 class="text-2xl font-bold text-white border-b-2 border-gray-700 pb-2">Trip Essentials</h3>
-                                    <div class="flex flex-col"><label for="sourceCity" class="text-sm font-medium text-gray-200">Source City</label><input type="text" id="sourceCity" name="sourceCity" value="${state.formData.sourceCity}" placeholder="e.g., Mumbai, India" class="mt-1 p-3 border border-gray-700 rounded-md focus:ring-[#00d0cd] focus:border-[#00d0cd] transition bg-gray-800 text-white" /></div>
-                                    <div class="space-y-4"><label class="text-sm font-medium text-gray-200 block">Desired Destination(s):</label><div class="space-y-2"><label class="text-sm font-medium text-gray-200 block">Trip Type</label><div class="flex flex-wrap gap-4">
-                                        ${['single', 'multi-city'].map(opt => `<label class="flex items-center space-x-2 text-sm text-gray-200"><input type="radio" name="destinationType" value="${opt}" ${state.formData.destinationType === opt ? 'checked' : ''} class="form-radio h-4 w-4 text-[#00d0cd] focus:ring-[#00d0cd]" /><span>${opt}</span></label>`).join('')}
-                                    </div></div><div class="flex flex-col"><label for="destination" class="text-sm font-medium text-gray-200">Destination(s) - specify multiple if a ${state.formData.destinationType} trip</label><textarea id="destination" name="destination" rows="3" placeholder="e.g., Reykjavik, Iceland" class="mt-1 p-3 border border-gray-700 rounded-md focus:ring-[#00d0cd] focus:border-[#00d0cd] transition bg-gray-800 text-white">${state.formData.destination}</textarea></div></div>
-                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6"><div class="flex flex-col"><label for="startDate" class="text-sm font-medium text-gray-200">Start Date</label><input type="date" id="startDate" name="travelDates.startDate" value="${state.formData.travelDates.startDate}" class="mt-1 p-3 border border-gray-700 rounded-md focus:ring-[#00d0cd] focus:border-[#00d0cd] transition bg-gray-800 text-white" /></div><div class="flex flex-col"><label for="endDate" class="text-sm font-medium text-gray-200">End Date</label><input type="date" id="endDate" name="travelDates.endDate" value="${state.formData.travelDates.endDate}" class="mt-1 p-3 border border-gray-700 rounded-md focus:ring-[#00d0cd] focus:border-[#00d0cd] transition bg-gray-800 text-white" /></div></div>
-                                    <div class="flex flex-col"><label for="flexibleDates" class="text-sm font-medium text-gray-200">If flexible, please indicate preferred month/season</label><input type="text" id="flexibleDates" name="travelDates.flexibleDates" value="${state.formData.travelDates.flexibleDates}" placeholder="e.g., Summer 2025" class="mt-1 p-3 border border-gray-700 rounded-md focus:ring-[#00d0cd] focus:border-[#00d0cd] transition bg-gray-800 text-white" /></div>
-                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6"><div class="flex flex-col"><label for="adults" class="text-sm font-medium text-gray-200">Adults (18+)</label><input type="number" id="adults" name="travelers.adults" min="1" value="${state.formData.travelers.adults}" class="mt-1 p-3 border border-gray-700 rounded-md focus:ring-[#00d0cd] focus:border-[#00d0cd] transition bg-gray-800 text-white" /></div><div class="flex flex-col"><label for="childrenAges" class="text-sm font-medium text-gray-200">Children (Ages)</label><input type="text" id="childrenAges" name="travelers.childrenAges" value="${state.formData.travelers.childrenAges}" placeholder="e.g., 6, 10, 14" class="mt-1 p-3 border border-gray-700 rounded-md focus:ring-[#00d0cd] focus:border-[#00d0cd] transition bg-gray-800 text-white" /></div><div class="flex flex-col"><label for="infants" class="text-sm font-medium text-gray-200">Infants (Under 2)</label><input type="number" id="infants" name="travelers.infants" min="0" value="${state.formData.travelers.infants}" class="mt-1 p-3 border border-gray-700 rounded-md focus:ring-[#00d0cd] focus:border-[#00d0cd] transition bg-gray-800 text-white" /></div></div>
-                                </section>`;
-                            break;
-                        case 'style':
-                            html = `
-                                <section class="space-y-6">
-                                    <h3 class="text-2xl font-bold text-white border-b-2 border-gray-700 pb-2">Your Travel Style & Preferences</h3>
-                                    <div class="space-y-2"><label class="text-sm font-medium text-gray-200 block">Who are you traveling with? (Select all that apply)</label><div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                                        ${['Solo', 'Partner/Spouse', 'Family with young children', 'Family with teenagers', 'Friends', 'Colleagues/Business Trip', 'Other'].map(opt => `<label class="flex items-center space-x-2 text-sm text-gray-200"><input type="checkbox" name="travelingWith" value="${opt}" ${state.formData.travelingWith.includes(opt) ? 'checked' : ''} class="form-checkbox h-4 w-4 text-[#00d0cd] rounded focus:ring-[#00d0cd]" /><span>${opt}</span></label>`).join('')}
-                                    </div></div>
-                                    ${state.formData.travelingWith.includes('Other') ? `<div class="flex flex-col"><label for="travelingWithOther" class="text-sm font-medium text-gray-200">Please specify</label><input type="text" id="travelingWithOther" name="travelingWithOther" value="${state.formData.travelingWithOther}" class="mt-1 p-3 border border-gray-700 rounded-md focus:ring-[#00d0cd] focus:border-[#00d0cd] transition bg-gray-800 text-white" /></div>` : ''}
-                                    <div class="space-y-2"><label class="text-sm font-medium text-gray-200 block">What is your preferred travel pace?</label><div class="flex flex-wrap gap-4">
-                                        ${['Relaxed', 'Moderate', 'Active', 'Adventure-packed'].map(opt => `<label class="flex items-center space-x-2 text-sm text-gray-200"><input type="radio" name="travelPace" value="${opt}" ${state.formData.travelPace === opt ? 'checked' : ''} class="form-radio h-4 w-4 text-[#00d0cd] focus:ring-[#00d0cd]" /><span>${opt}</span></label>`).join('')}
-                                    </div></div>
-                                    <div class="space-y-2"><label class="text-sm font-medium text-gray-200 block">What is your general budget comfort level? (per person, excluding flights)</label><div class="flex flex-wrap gap-4">
-                                        ${['Budget-Conscious', 'Mid-Range', 'Upscale', 'Luxury', 'Flexible'].map(opt => `<label class="flex items-center space-x-2 text-sm text-gray-200"><input type="radio" name="budget" value="${opt}" ${state.formData.budget === opt ? 'checked' : ''} class="form-radio h-4 w-4 text-[#00d0cd] focus:ring-[#00d0cd]" /><span>${opt}</span></label>`).join('')}
-                                    </div></div>
-                                    <div class="space-y-2"><label class="text-sm font-medium text-gray-200 block">Accommodation Preferences: (Select all that apply)</label><div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                                        ${['Hotels', 'Boutique Hotels', 'Resorts', 'Vacation Rentals', 'Unique Stays', 'Hostels/Guesthouses'].map(opt => `<label class="flex items-center space-x-2 text-sm text-gray-200"><input type="checkbox" name="accommodationPreferences" value="${opt}" ${state.formData.accommodationPreferences.includes(opt) ? 'checked' : ''} class="form-checkbox h-4 w-4 text-[#00d0cd] rounded focus:ring-[#00d0cd]" /><span>${opt}</span></label>`).join('')}
-                                    </div></div>
-                                    <div class="flex flex-col"><label for="specificAmenities" class="text-sm font-medium text-gray-200">Specific amenities (e.g., pool, gym, spa)</label><textarea id="specificAmenities" name="specificAmenities" rows="3" class="mt-1 p-3 border border-gray-700 rounded-md focus:ring-[#00d0cd] focus:border-[#00d0cd] transition bg-gray-800 text-white">${state.formData.specificAmenities}</textarea></div>
-                                    <div class="space-y-2"><label class="text-sm font-medium text-gray-200 block">Preferred Dining Experiences: (Select all that apply)</label><div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                                        ${['Fine Dining / Michelin Star', 'Local Cuisine / Street Food', 'Casual Restaurants / Cafes'].map(opt => `<label class="flex items-center space-x-2 text-sm text-gray-200"><input type="checkbox" name="diningExperiences" value="${opt}" ${state.formData.diningExperiences.includes(opt) ? 'checked' : ''} class="form-checkbox h-4 w-4 text-[#00d0cd] rounded focus:ring-[#00d0cd]" /><span>${opt}</span></label>`).join('')}
-                                    </div></div>
-                                    <div class="flex flex-col"><label for="dietaryRestrictions" class="text-sm font-medium text-gray-200">Any Dietary Restrictions/Allergies?</label><textarea id="dietaryRestrictions" name="dietaryRestrictions" rows="3" placeholder="e.g., Vegetarian, Vegan, Halal, Gluten-Free, Kosher" class="mt-1 p-3 border border-gray-700 rounded-md focus:ring-[#00d0cd] focus:border-[#00d0cd] transition bg-gray-800 text-white">${state.formData.dietaryRestrictions}</textarea></div>
-                                </section>`;
-                            break;
-                        case 'interests':
-                            html = `
-                                <section class="space-y-6">
-                                    <h3 class="text-2xl font-bold text-white border-b-2 border-gray-700 pb-2">Your Interests & Desired Experiences</h3>
-                                    <div class="space-y-2"><label class="text-sm font-medium text-gray-200 block">What are your primary interests for this trip? (Select all that apply)</label><div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                                        ${['Culture & History', 'Food & Drink', 'Nature & Outdoors', 'Adventure & Sports', 'Relaxation & Wellness', 'Art & Design', 'Shopping & Fashion', 'Nightlife & Entertainment', 'Family-Friendly Activities', 'Photography', 'Philanthropic/Volunteering opportunities', 'Other'].map(opt => `<label class="flex items-center space-x-2 text-sm text-gray-200"><input type="checkbox" name="primaryInterests" value="${opt}" ${state.formData.primaryInterests.includes(opt) ? 'checked' : ''} class="form-checkbox h-4 w-4 text-[#00d0cd] rounded focus:ring-[#00d0cd]" /><span>${opt}</span></label>`).join('')}
-                                    </div></div>
-                                    ${state.formData.primaryInterests.includes('Other') ? `<div class="flex flex-col"><label for="primaryInterestsOther" class="text-sm font-medium text-gray-200">Please specify other interests</label><input type="text" id="primaryInterestsOther" name="primaryInterestsOther" value="${state.formData.primaryInterestsOther}" class="mt-1 p-3 border border-gray-700 rounded-md focus:ring-[#00d0cd] focus:border-[#00d0cd] transition bg-gray-800 text-white" /></div>` : ''}
-                                    <div class="flex flex-col"><label for="mustSee" class="text-sm font-medium text-gray-200">Are there any specific 'must-see' landmarks, attractions, or activities?</label><textarea id="mustSee" name="mustSee" rows="3" class="mt-1 p-3 border border-gray-700 rounded-md focus:ring-[#00d0cd] focus:border-[#00d0cd] transition bg-gray-800 text-white">${state.formData.mustSee}</textarea></div>
-                                    <div class="flex flex-col"><label for="avoid" class="text-sm font-medium text-gray-200">Are there any activities, places, or experiences you absolutely want to AVOID?</label><textarea id="avoid" name="avoid" rows="3" class="mt-1 p-3 border border-gray-700 rounded-md focus:ring-[#00d0cd] focus:border-[#00d0cd] transition bg-gray-800 text-white">${state.formData.avoid}</textarea></div>
-                                    <div class="space-y-2"><label class="text-sm font-medium text-gray-200 block">Do you prefer:</label><div class="flex flex-wrap gap-4">
-                                        ${['Guided tours with a group', 'Private guided tours', 'Self-guided exploration', 'A mix of the above'].map(opt => `<label class="flex items-center space-x-2 text-sm text-gray-200"><input type="radio" name="preferredTourStyle" value="${opt}" ${state.formData.preferredTourStyle === opt ? 'checked' : ''} class="form-radio h-4 w-4 text-[#00d0cd] focus:ring-[#00d0cd]" /><span>${opt}</span></label>`).join('')}
-                                    </div></div>
-                                    <div class="space-y-2"><label class="text-sm font-medium text-gray-200 block">How important is it to interact with locals and experience authentic culture?</label><div class="flex flex-wrap gap-4">
-                                        ${['Very Important', 'Moderately Important', 'Not a priority'].map(opt => `<label class="flex items-center space-x-2 text-sm text-gray-200"><input type="radio" name="localInteraction" value="${opt}" ${state.formData.localInteraction === opt ? 'checked' : ''} class="form-radio h-4 w-4 text-[#00d0cd] focus:ring-[#00d0cd]" /><span>${opt}</span></label>`).join('')}
-                                    </div></div>
-                                    <div class="flex flex-col"><label for="accessibilityNeeds" class="text-sm font-medium text-gray-200">Any specific mobility or accessibility needs we should be aware of?</label><textarea id="accessibilityNeeds" name="accessibilityNeeds" rows="3" placeholder="e.g., wheelchair accessible, limited walking, quiet environments" class="mt-1 p-3 border border-gray-700 rounded-md focus:ring-[#00d0cd] focus:border-[#00d0cd] transition bg-gray-800 text-white">${state.formData.accessibilityNeeds}</textarea></div>
-                                    <div class="flex flex-col"><label for="otherInfo" class="text-sm font-medium text-gray-200">Is there anything else you'd like us to know?</label><textarea id="otherInfo" name="otherInfo" rows="3" placeholder="e.g., special occasions, desired atmosphere, unique requests" class="mt-1 p-3 border border-gray-700 rounded-md focus:ring-[#00d0cd] focus:border-[#00d0cd] transition bg-gray-800 text-white">${state.formData.otherInfo}</textarea></div>
-                                    <div class="space-y-2"><label class="text-sm font-medium text-gray-200 block">How did you hear about Brilliant AI Plan&Trip?</label><div class="flex flex-wrap gap-4">
-                                        ${['Social Media', 'Friend/Family Referral', 'Online Search', 'Article/Blog', 'Event/Conference', 'Other'].map(opt => `<label class="flex items-center space-x-2 text-sm text-gray-200"><input type="radio" name="howDidYouHear" value="${opt}" ${state.formData.howDidYouHear === opt ? 'checked' : ''} class="form-radio h-4 w-4 text-[#00d0cd] focus:ring-[#00d0cd]" /><span>${opt}</span></label>`).join('')}
-                                    </div></div>
-                                    ${state.formData.howDidYouHear === 'Social Media' || state.formData.howDidYouHear === 'Other' ? `<div class="flex flex-col"><label for="howDidYouHearOther" class="text-sm font-medium text-gray-200">Please specify</label><input type="text" id="howDidYouHearOther" name="howDidYouHearOther" value="${state.formData.howDidYouHearOther}" class="mt-1 p-3 border border-gray-700 rounded-md focus:ring-[#00d0cd] focus:border-[#00d0cd] transition bg-gray-800 text-white" /></div>` : ''}
-                                    <div class="mt-8 text-center text-gray-400 text-sm italic">
-                                        <p><strong>Privacy & Security Note:</strong> At Brilliant AI, your privacy and data security are paramount. The information you provide will be used solely for the purpose of crafting your personalized trip itinerary and enhancing your experience with our services, in accordance with our privacy policy.</p>
-                                    </div>
-                                </section>
-                                <div class="mt-8 text-right">
-                                    <button type="submit" id="submit-btn" class="px-8 py-4 bg-[#00d0cd] text-white font-extrabold rounded-full text-lg shadow-2xl hover:bg-opacity-80 transition-colors duration-300 transform hover:scale-105 active:scale-100">
-                                        Submit & Plan Your Trip
+            const htmlRenderer = {
+                renderModal: (modalId, title, content, closeAction) => {
+                    return `
+                        <div id="${modalId}" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/70 backdrop-blur-sm animate-fade-in">
+                            <div class="relative w-full max-w-4xl max-h-[90vh] bg-gray-800 rounded-2xl shadow-2xl p-6 text-white overflow-y-auto">
+                                <div class="flex justify-between items-center pb-3 border-b border-gray-700 mb-4">
+                                    <h2 class="text-3xl font-bold text-[#00d0cd]">${title}</h2>
+                                    <button class="text-gray-400 hover:text-white transition-colors" data-action="${closeAction}">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                        </svg>
                                     </button>
                                 </div>
-                            `;
-                            break;
-                    }
-                    form.innerHTML = html;
-                };
-
-                const updateFormState = (e) => {
-                    const { name, value, type, checked } = e.target;
-                    
-                    if (type === 'checkbox') {
-                        const arr = state.formData[name] || [];
-                        state.formData[name] = checked ? [...arr, value] : arr.filter(item => item !== value);
-                    } else if (name.includes('.')) {
-                        const [parent, child] = name.split('.');
-                        state.formData[parent][child] = value;
-                    } else {
-                        state.formData[name] = value;
-                    }
-
-                    // This is a simple way to re-render the current form section after a change
-                    const activeSectionBtn = formNav.querySelector('.bg-[#00d0cd]');
-                    renderFormSection(activeSectionBtn.dataset.section);
-                };
-
-                formNav.addEventListener('click', (e) => {
-                    const button = e.target.closest('button');
-                    if (button) {
-                        formNav.querySelectorAll('button').forEach(btn => {
-                            btn.classList.remove('bg-[#00d0cd]', 'text-white', 'shadow-md');
-                            btn.classList.add('bg-transparent', 'text-white', 'hover:bg-gray-700');
-                        });
-                        button.classList.add('bg-[#00d0cd]', 'text-white', 'shadow-md');
-                        button.classList.remove('bg-transparent', 'text-white', 'hover:bg-gray-700');
-                        renderFormSection(button.dataset.section);
-                    }
-                });
-
-                form.addEventListener('change', updateFormState);
-                
-                form.addEventListener('submit', handleFormSubmission);
-                
-                document.getElementById('close-form-btn').addEventListener('click', () => {
-                    state.showFormModal = false;
-                    render();
-                });
-
-                renderFormSection('contact');
-            };
-
-            const renderLoadingModal = () => {
-                modalContainer.innerHTML = `
-                    <div id="loading-modal" class="fixed inset-0 z-[150] bg-black bg-opacity-75 flex items-center justify-center p-4 animate-fade-in">
-                        <div class="bg-gray-900/60 p-8 rounded-lg shadow-xl text-center max-w-sm w-full">
-                            <div class="flex justify-center items-center mb-4">
-                                <div class="loader"></div>
-                            </div>
-                            <h3 class="text-2xl font-bold text-white mb-2">Generating Itinerary...</h3>
-                            <p class="text-gray-200">Please wait while our AI crafts your personalized trip.</p>
-                        </div>
-                    </div>
-                `;
-            };
-
-            const renderItineraryModal = () => {
-                modalContainer.innerHTML = `
-                    <div id="itinerary-modal" class="fixed inset-0 z-[100] bg-black bg-opacity-75 flex items-center justify-center p-4 overflow-y-auto animate-fade-in">
-                        <div class="bg-gray-900/60 rounded-lg shadow-2xl p-8 max-w-4xl w-full my-8 relative animate-fade-in-up">
-                            <button id="close-itinerary-btn" class="absolute top-4 right-4 text-white hover:text-gray-400 transition duration-200 z-50">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                            </button>
-                            <h2 class="text-3xl font-extrabold text-white mb-4 text-center">Your Custom AI Itinerary</h2>
-                            <div id="itinerary-content" class="modal-content-scroll overflow-y-auto p-4 border rounded-md bg-gray-800/80 markdown-content text-white">
-                                <!-- Itinerary content will be inserted here -->
-                                ${marked.parse(state.generatedItinerary || 'Could not generate itinerary. Please try again.')}
+                                <div class="modal-content-scroll overflow-y-auto pr-4">
+                                    ${content}
+                                </div>
                             </div>
                         </div>
-                    </div>
-                `;
-                
-                document.getElementById('close-itinerary-btn').addEventListener('click', () => {
-                    state.showItineraryModal = false;
-                    render();
-                });
-            };
+                    `;
+                },
 
-            const renderAboutModal = () => {
-                modalContainer.innerHTML = `
-                    <div id="about-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-75 animate-fade-in">
-                        <div class="bg-gray-900/60 text-white rounded-xl shadow-2xl p-8 mx-auto text-left relative flex flex-col md:flex-row overflow-hidden w-full max-w-7xl">
-                            <button id="close-about-btn" class="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors text-2xl">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                            </button>
-                            <aside class="w-full md:w-1/4 flex-shrink-0 bg-gray-900 p-6 rounded-l-xl md:rounded-r-none overflow-y-auto border-r border-[#00d0cd]/20 md:border-b-0">
-                                <h2 class="text-3xl font-bold mb-6 text-white">About Us</h2>
-                                <nav id="about-nav" class="space-y-4">
-                                    <button class="w-full text-left px-4 py-3 rounded-xl font-semibold transition-colors duration-200 hover:bg-white/20 ${state.aboutSection === 'introduction' ? 'bg-white text-[#191970]' : 'text-white'}" data-section="introduction">Introduction to Company</button>
-                                    <button class="w-full text-left px-4 py-3 rounded-xl font-semibold transition-colors duration-200 hover:bg-white/20 ${state.aboutSection === 'mission' ? 'bg-white text-[#191970]' : 'text-white'}" data-section="mission">Our Mission</button>
-                                    <button class="w-full text-left px-4 py-3 rounded-xl font-semibold transition-colors duration-200 hover:bg-white/20 ${state.aboutSection === 'vision' ? 'bg-white text-[#191970]' : 'text-white'}" data-section="vision">Our Vision</button>
-                                </nav>
-                            </aside>
-                            <div id="about-content" class="flex-grow md:w-3/4 p-6 text-justify overflow-y-auto">
+                renderAboutModal: () => {
+                    const content = `
+                        <div class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-8">
+                            <!-- Sidebar -->
+                            <div class="flex flex-col w-full md:w-1/4">
+                                <button class="about-nav-btn p-3 rounded-lg text-left font-semibold hover:bg-gray-700 transition-colors ${state.aboutSection === 'introduction' ? 'bg-[#00d0cd] text-gray-900' : 'text-white'}" data-section="introduction">
+                                    Introduction
+                                </button>
+                                <button class="about-nav-btn p-3 rounded-lg text-left font-semibold hover:bg-gray-700 transition-colors ${state.aboutSection === 'mission' ? 'bg-[#00d0cd] text-gray-900' : 'text-white'}" data-section="mission">
+                                    Our Mission
+                                </button>
+                                <button class="about-nav-btn p-3 rounded-lg text-left font-semibold hover:bg-gray-700 transition-colors ${state.aboutSection === 'vision' ? 'bg-[#00d0cd] text-gray-900' : 'text-white'}" data-section="vision">
+                                    Our Vision
+                                </button>
+                            </div>
+                            <!-- Content -->
+                            <div class="flex-1 p-4 md:p-6 bg-gray-700 rounded-xl shadow-inner">
                                 ${aboutSections[state.aboutSection]}
                             </div>
                         </div>
-                    </div>
-                `;
+                    `;
+                    return htmlRenderer.renderModal('about-modal', 'About Brilliant AI', content, 'close-about');
+                },
 
-                document.getElementById('close-about-btn').addEventListener('click', () => {
-                    state.showAboutModal = false;
-                    render();
-                });
-                document.getElementById('about-nav').addEventListener('click', (e) => {
-                    const button = e.target.closest('button');
-                    if (button) {
-                        state.aboutSection = button.dataset.section;
-                        render();
-                    }
-                });
-            };
-
-            const renderContactModal = () => {
-                modalContainer.innerHTML = `
-                    <div id="contact-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-75 animate-fade-in">
-                        <div class="bg-gray-900/60 text-white rounded-xl shadow-2xl p-8 mx-auto text-center relative max-w-lg w-full">
-                            <button id="close-contact-btn" class="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                            </button>
-                            <h2 class="text-3xl font-bold mb-4 text-[#00d0cd]">Get in Touch</h2>
-                            <p class="text-lg mb-6 text-gray-200">We'd love to hear from you!</p>
+                renderContactModal: () => {
+                    const content = `
+                        <div class="text-center p-6">
+                            <h3 class="text-3xl font-semibold text-[#00d0cd] mb-4">Get in Touch</h3>
+                            <p class="text-lg text-white mb-6">We'd love to hear from you! Reach out to us through the following channels:</p>
                             <div class="space-y-4">
-                                <a href="mailto:info@brilliantaitravel.com" class="flex items-center justify-center px-6 py-3 bg-[#00d0cd] text-[#191970] rounded-full font-bold hover:bg-opacity-80 transition-colors">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                                        <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
-                                        <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
-                                    </svg>
-                                    Email Us
-                                </a>
-                                <a href="https://wa.me/918288834228" target="_blank" class="flex items-center justify-center px-6 py-3 bg-white text-[#191970] rounded-full font-bold hover:bg-gray-200 transition-colors">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 24 24" fill="currentColor"><path d="M20.52 3.48A11.02 11.02 0 0012 1a11.02 11.02 0 00-8.52 3.48A11.02 11.02 0 001 12c0 2.22.61 4.31 1.74 6.1a10.96 10.96 0 00-1.63 2.92l3.05-.88a10.97 10.97 0 006.84 2.1c6.07 0 11-4.93 11-11s-4.93-11-11-11zm-4.7 13.62a3.84 3.84 0 01-2.92 1.3c-1.3 0-2.58-.6-3.46-1.74a8.21 8.21 0 01-1.74-3.46c0-1.3.56-2.5 1.74-3.46a3.28 3.28 0 014.28-.46c.9.68 1.48 1.74 1.48 2.92.01 1.18-.46 2.24-1.34 2.92zm-.8-3.92a.56.56 0 00-.7-.04c-.38.2-.82.3-1.3.3-1.62 0-2.94-1.32-2.94-2.94a2.94 2.94 0 013.92-2.42c.6.28 1.08.76 1.36 1.36a.56.56 0 00-.04.7.56.56 0 00.7.04z" stroke-linecap="round" stroke-linejoin="round" stroke-width="0"/></svg>
-                                    WhatsApp
-                                </a>
-                                <a href="https://www.instagram.com/planandtrip_official/" target="_blank" class="flex items-center justify-center px-6 py-3 bg-white text-[#191970] rounded-full font-bold hover:bg-gray-200 transition-colors">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.486 2 2 6.486 2 12s4.486 10 10 10 10-4.486 10-10S17.514 2 12 2zm0 1.9c1.983 0 2.227 0 2.94.043.68.04 1.045.143 1.25.247.33.16.55.38.71.71.1.205.207.57.247 1.25.043.713.043 2.957.043 4.94s0 4.227-.043 4.94c-.04.68-.147 1.045-.247 1.25-.16.33-.38.55-.71.71-.205.1-.57.207-1.25.247-.713.043-2.957.043-4.94.043s-4.227 0-4.94-.043c-.68-.04-1.045-.147-1.25-.247-.33-.16-.55-.38-.71-.71-.1-.205-.207-.57-.247-1.25-.043-.713-.043-2.957-.043-4.94s0-4.227.043-4.94c.04-.68.147-1.045.247-1.25.16-.33.38-.55.71-.71.205-.1.57-.207 1.25-.247C9.773 3.9 10.017 3.9 12 3.9zm0 2.1a6 6 0 100 12 6 6 0 000-12zm0 2a4 4 0 110 8 4 4 0 010-8zm0 2a2 2 0 100 4 2 2 0 000-4zm6.5-5.5a1.5 1.5 0 100 3 1.5 1.5 0 000-3z" stroke-linecap="round" stroke-linejoin="round" stroke-width="0"/></svg>
-                                    Instagram
-                                </a>
-                                <a href="https://www.facebook.com/people/Planandtrip/61574923184872/" target="_blank" class="flex items-center justify-center px-6 py-3 bg-white text-[#191970] rounded-full font-bold hover:bg-gray-200 transition-colors">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.486 2 2 6.486 2 12s4.486 10 10 10 10-4.486 10-10S17.514 2 12 2zm3 8.5h-2v-2a1 1 0 011-1h1v-2h-2a4 4 0 00-4 4v2h-2v2h2v6h3v-6h2l1-2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="0"/></svg>
-                                    Facebook
-                                </a>
-                                <a href="https://www.linkedin.com/in/brilliant-ai-travel-and-expedetion/" target="_blank" class="flex items-center justify-center px-6 py-3 bg-white text-[#191970] rounded-full font-bold hover:bg-gray-200 transition-colors">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 24 24" fill="currentColor"><path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
-                                    <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
-                                    <path d="M21 0H3C1.346 0 0 1.346 0 3v18c0 1.654 1.346 3 3 3h18c1.654 0 3-1.346 3-3V3c0-1.654-1.346-3-3-3zM9 18H6v-9h3v9zm-1.5-9.7a1.8 1.8 0 110-3.6 1.8 1.8 0 010 3.6zm13.5 9.7h-3v-5.6c0-1.025-.018-2.348-1.428-2.348-1.43 0-1.65 1.118-1.65 2.278V18h-3v-9h2.89v1.365h.04c.4-.766 1.378-1.574 2.855-1.574 3.056 0 3.62 2.012 3.62 4.62V18h-.007z" stroke-linecap="round" stroke-linejoin="round" stroke-width="0"/></svg>
-                                    LinkedIn
-                                </a>
-                                <a href="https://brilliantaitravelandexpedition.com/" target="_blank" class="flex items-center justify-center px-6 py-3 bg-white text-[#191970] rounded-full font-bold hover:bg-gray-200 transition-colors">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.486 2 2 6.486 2 12s4.486 10 10 10 10-4.486 10-10S17.514 2 12 2zm0 18c-4.411 0-8-3.589-8-8s3.589-8 8-8 8 3.589 8 8-3.589 8-8 8z" stroke-linecap="round" stroke-linejoin="round" stroke-width="0"/></svg>
-                                    Website
-                                </a>
+                                <div class="flex items-center justify-center space-x-3">
+                                    <i class="fas fa-envelope text-[#00d0cd] text-2xl"></i>
+                                    <a href="mailto:info@brilliantaitravelandexpedition.com" class="text-white hover:text-[#00d0cd] transition-colors text-lg">info@brilliantaitravelandexpedition.com</a>
+                                </div>
+                                <div class="flex items-center justify-center space-x-3">
+                                    <i class="fas fa-phone-alt text-[#00d0cd] text-2xl"></i>
+                                    <a href="tel:+1234567890" class="text-white hover:text-[#00d0cd] transition-colors text-lg">+91-9876543210</a>
+                                </div>
+                            </div>
+                            <div class="mt-8">
+                                <h4 class="text-2xl font-semibold text-[#00d0cd] mb-2">Follow Us</h4>
+                                <div class="flex justify-center space-x-6">
+                                    <a href="#" class="text-white hover:text-[#00d0cd] transition-colors"><i class="fab fa-facebook-f text-2xl"></i></a>
+                                    <a href="#" class="text-white hover:text-[#00d0cd] transition-colors"><i class="fab fa-twitter text-2xl"></i></a>
+                                    <a href="#" class="text-white hover:text-[#00d0cd] transition-colors"><i class="fab fa-instagram text-2xl"></i></a>
+                                    <a href="#" class="text-white hover:text-[#00d0cd] transition-colors"><i class="fab fa-linkedin-in text-2xl"></i></a>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                `;
-                document.getElementById('close-contact-btn').addEventListener('click', () => {
-                    state.showContactModal = false;
-                    render();
-                });
-            };
+                    `;
+                    return htmlRenderer.renderModal('contact-modal', 'Contact Us', content, 'close-contact');
+                },
 
-            const handleFormSubmission = async (e) => {
-                e.preventDefault();
-                
-                // Close the form modal and show the loading screen
-                state.showFormModal = false;
-                state.isGenerating = true;
-                render();
+                renderFormModal: () => {
+                    const content = `
+                        <div class="bg-gray-800 rounded-2xl p-8">
+                            <h2 class="text-4xl font-extrabold text-white text-center mb-8">Create Your Dream Itinerary</h2>
+                            <form id="trip-form" class="space-y-8">
+                                <!-- Personal Information -->
+                                <section class="form-section">
+                                    <h3 class="text-2xl">Personal Information</h3>
+                                    <div class="form-field-group">
+                                        <div>
+                                            <label for="fullName" class="form-input-label">Full Name</label>
+                                            <input type="text" id="fullName" name="fullName" class="form-input" required>
+                                        </div>
+                                        <div>
+                                            <label for="email" class="form-input-label">Email Address</label>
+                                            <input type="email" id="email" name="email" class="form-input" required>
+                                        </div>
+                                        <div>
+                                            <label for="phone" class="form-input-label">Phone Number</label>
+                                            <input type="tel" id="phone" name="phone" class="form-input">
+                                        </div>
+                                        <div class="col-span-full">
+                                            <label class="form-input-label">Preferred Communication Method</label>
+                                            <div class="flex flex-wrap gap-4 mt-2">
+                                                <label class="form-checkbox-label text-white"><input type="checkbox" name="preferredCommunication[]" value="Email" class="form-checkbox">Email</label>
+                                                <label class="form-checkbox-label text-white"><input type="checkbox" name="preferredCommunication[]" value="Phone Call" class="form-checkbox">Phone Call</label>
+                                                <label class="form-checkbox-label text-white"><input type="checkbox" name="preferredCommunication[]" value="WhatsApp" class="form-checkbox">WhatsApp</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </section>
+                                <!-- Travel Details -->
+                                <section class="form-section">
+                                    <h3 class="text-2xl">Travel Details</h3>
+                                    <div class="form-field-group">
+                                        <div>
+                                            <label for="sourceCity" class="form-input-label">Source City/Country</label>
+                                            <input type="text" id="sourceCity" name="sourceCity" class="form-input" required>
+                                        </div>
+                                        <div>
+                                            <label for="destination" class="form-input-label">Destination (City, Country)</label>
+                                            <input type="text" id="destination" name="destination" class="form-input" required>
+                                        </div>
+                                        <div>
+                                            <label for="destinationType" class="form-input-label">Destination Type</label>
+                                            <select id="destinationType" name="destinationType" class="form-input" required>
+                                                <option value="single">Single City/Country</option>
+                                                <option value="multi">Multi-city/country</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-field-group">
+                                        <div>
+                                            <label for="travelDates.startDate" class="form-input-label">Start Date</label>
+                                            <input type="date" id="travelDates.startDate" name="travelDates.startDate" class="form-input" required>
+                                        </div>
+                                        <div>
+                                            <label for="travelDates.endDate" class="form-input-label">End Date</label>
+                                            <input type="date" id="travelDates.endDate" name="travelDates.endDate" class="form-input" required>
+                                        </div>
+                                        <div>
+                                            <label for="travelDates.flexibleDates" class="form-input-label">Flexible Dates?</label>
+                                            <select id="travelDates.flexibleDates" name="travelDates.flexibleDates" class="form-input">
+                                                <option value="">No</option>
+                                                <option value="+- 3 days">Yes, +- 3 days</option>
+                                                <option value="+- 7 days">Yes, +- 7 days</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-field-group">
+                                        <div>
+                                            <label for="travelers.adults" class="form-input-label">Number of Adults</label>
+                                            <input type="number" id="travelers.adults" name="travelers.adults" class="form-input" min="1" value="1" required>
+                                        </div>
+                                        <div>
+                                            <label for="travelers.childrenAges" class="form-input-label">Ages of Children (comma-separated)</label>
+                                            <input type="text" id="travelers.childrenAges" name="travelers.childrenAges" class="form-input" placeholder="e.g., 5, 8, 12">
+                                        </div>
+                                        <div>
+                                            <label for="travelers.infants" class="form-input-label">Number of Infants (Under 2)</label>
+                                            <input type="number" id="travelers.infants" name="travelers.infants" class="form-input" min="0" value="0">
+                                        </div>
+                                    </div>
+                                    <div class="col-span-full">
+                                        <label class="form-input-label">Traveling With</label>
+                                        <div class="flex flex-wrap gap-4 mt-2">
+                                            <label class="form-checkbox-label text-white"><input type="checkbox" name="travelingWith[]" value="Family" class="form-checkbox">Family</label>
+                                            <label class="form-checkbox-label text-white"><input type="checkbox" name="travelingWith[]" value="Friends" class="form-checkbox">Friends</label>
+                                            <label class="form-checkbox-label text-white"><input type="checkbox" name="travelingWith[]" value="Partner/Spouse" class="form-checkbox">Partner/Spouse</label>
+                                            <label class="form-checkbox-label text-white"><input type="checkbox" name="travelingWith[]" value="Solo" class="form-checkbox">Solo</label>
+                                            <label class="form-checkbox-label text-white"><input type="checkbox" name="travelingWith[]" value="Other" class="form-checkbox" id="traveling-with-other-checkbox">Other</label>
+                                            <input type="text" id="traveling-with-other-input" name="travelingWithOther" class="form-input hidden flex-1 min-w-[150px]" placeholder="Specify other...">
+                                        </div>
+                                    </div>
+                                </section>
+                                <!-- Preferences -->
+                                <section class="form-section">
+                                    <h3 class="text-2xl">Preferences</h3>
+                                    <div class="form-field-group">
+                                        <div>
+                                            <label for="travelPace" class="form-input-label">Travel Pace</label>
+                                            <select id="travelPace" name="travelPace" class="form-input">
+                                                <option value="">Select...</option>
+                                                <option value="Relaxed">Relaxed (slow, leisurely)</option>
+                                                <option value="Moderate">Moderate (balance of activity and rest)</option>
+                                                <option value="Fast-paced">Fast-paced (see as much as possible)</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label for="budget" class="form-input-label">Budget Per Person</label>
+                                            <select id="budget" name="budget" class="form-input">
+                                                <option value="">Select...</option>
+                                                <option value="Economy">Economy ($)</option>
+                                                <option value="Mid-range">Mid-range ($$)</option>
+                                                <option value="Luxury">Luxury ($$$)</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-span-full">
+                                        <label class="form-input-label">Accommodation Preferences</label>
+                                        <div class="flex flex-wrap gap-4 mt-2">
+                                            <label class="form-checkbox-label text-white"><input type="checkbox" name="accommodationPreferences[]" value="Hotel" class="form-checkbox">Hotel</label>
+                                            <label class="form-checkbox-label text-white"><input type="checkbox" name="accommodationPreferences[]" value="Resort" class="form-checkbox">Resort</label>
+                                            <label class="form-checkbox-label text-white"><input type="checkbox" name="accommodationPreferences[]" value="Villa" class="form-checkbox">Villa</label>
+                                            <label class="form-checkbox-label text-white"><input type="checkbox" name="accommodationPreferences[]" value="Apartment" class="form-checkbox">Apartment/Airbnb</label>
+                                            <label class="form-checkbox-label text-white"><input type="checkbox" name="accommodationPreferences[]" value="Boutique" class="form-checkbox">Boutique</label>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label for="specificAmenities" class="form-input-label">Specific Amenities</label>
+                                        <input type="text" id="specificAmenities" name="specificAmenities" class="form-input" placeholder="e.g., swimming pool, gym, free breakfast">
+                                    </div>
+                                    <div class="col-span-full">
+                                        <label class="form-input-label">Dining Experiences</label>
+                                        <div class="flex flex-wrap gap-4 mt-2">
+                                            <label class="form-checkbox-label text-white"><input type="checkbox" name="diningExperiences[]" value="Local Cuisine" class="form-checkbox">Local Cuisine</label>
+                                            <label class="form-checkbox-label text-white"><input type="checkbox" name="diningExperiences[]" value="Fine Dining" class="form-checkbox">Fine Dining</label>
+                                            <label class="form-checkbox-label text-white"><input type="checkbox" name="diningExperiences[]" value="Casual" class="form-checkbox">Casual</label>
+                                            <label class="form-checkbox-label text-white"><input type="checkbox" name="diningExperiences[]" value="Street Food" class="form-checkbox">Street Food</label>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label for="dietaryRestrictions" class="form-input-label">Dietary Restrictions</label>
+                                        <input type="text" id="dietaryRestrictions" name="dietaryRestrictions" class="form-input" placeholder="e.g., vegetarian, gluten-free, dairy allergy">
+                                    </div>
+                                </section>
+                                <!-- Activities & Interests -->
+                                <section class="form-section">
+                                    <h3 class="text-2xl">Activities & Interests</h3>
+                                    <div class="col-span-full">
+                                        <label class="form-input-label">Primary Interests</label>
+                                        <div class="flex flex-wrap gap-4 mt-2">
+                                            <label class="form-checkbox-label text-white"><input type="checkbox" name="primaryInterests[]" value="Adventure" class="form-checkbox">Adventure</label>
+                                            <label class="form-checkbox-label text-white"><input type="checkbox" name="primaryInterests[]" value="Culture & History" class="form-checkbox">Culture & History</label>
+                                            <label class="form-checkbox-label text-white"><input type="checkbox" name="primaryInterests[]" value="Nature" class="form-checkbox">Nature</label>
+                                            <label class="form-checkbox-label text-white"><input type="checkbox" name="primaryInterests[]" value="Relaxation" class="form-checkbox">Relaxation</label>
+                                            <label class="form-checkbox-label text-white"><input type="checkbox" name="primaryInterests[]" value="Food & Culinary" class="form-checkbox">Food & Culinary</label>
+                                            <label class="form-checkbox-label text-white"><input type="checkbox" name="primaryInterests[]" value="Shopping" class="form-checkbox">Shopping</label>
+                                            <label class="form-checkbox-label text-white"><input type="checkbox" name="primaryInterests[]" value="Nightlife" class="form-checkbox">Nightlife</label>
+                                            <label class="form-checkbox-label text-white"><input type="checkbox" name="primaryInterests[]" value="Other" class="form-checkbox" id="primary-interests-other-checkbox">Other</label>
+                                            <input type="text" id="primary-interests-other-input" name="primaryInterestsOther" class="form-input hidden flex-1 min-w-[150px]" placeholder="Specify other...">
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label for="mustSee" class="form-input-label">Must-See Attractions/Activities</label>
+                                        <input type="text" id="mustSee" name="mustSee" class="form-input" placeholder="e.g., Eiffel Tower, Great Wall">
+                                    </div>
+                                    <div>
+                                        <label for="avoid" class="form-input-label">Things to Avoid</label>
+                                        <input type="text" id="avoid" name="avoid" class="form-input" placeholder="e.g., crowded places, long hikes">
+                                    </div>
+                                    <div class="form-field-group">
+                                        <div>
+                                            <label for="preferredTourStyle" class="form-input-label">Preferred Tour Style</label>
+                                            <select id="preferredTourStyle" name="preferredTourStyle" class="form-input">
+                                                <option value="">Select...</option>
+                                                <option value="Guided Tours">Guided Tours</option>
+                                                <option value="Independent Exploration">Independent Exploration</option>
+                                                <option value="Mix of Both">Mix of Both</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label for="localInteraction" class="form-input-label">Level of Local Interaction</label>
+                                            <select id="localInteraction" name="localInteraction" class="form-input">
+                                                <option value="">Select...</option>
+                                                <option value="High">High (local workshops, homestays)</option>
+                                                <option value="Moderate">Moderate (local markets, a few meals)</option>
+                                                <option value="Low">Low (minimal interaction)</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label for="accessibilityNeeds" class="form-input-label">Accessibility Needs</label>
+                                        <input type="text" id="accessibilityNeeds" name="accessibilityNeeds" class="form-input" placeholder="e.g., wheelchair access, limited mobility">
+                                    </div>
+                                    <div>
+                                        <label for="otherInfo" class="form-input-label">Any Other Information</label>
+                                        <textarea id="otherInfo" name="otherInfo" class="form-textarea" rows="3" placeholder="Tell us anything else that might be helpful."></textarea>
+                                    </div>
+                                </section>
+                                <!-- How did you hear about us? -->
+                                <section class="form-section">
+                                    <h3 class="text-2xl">How did you hear about us?</h3>
+                                    <div class="flex flex-wrap gap-4 mt-2">
+                                        <label class="form-checkbox-label text-white"><input type="checkbox" name="howDidYouHear[]" value="Google Search" class="form-checkbox">Google Search</label>
+                                        <label class="form-checkbox-label text-white"><input type="checkbox" name="howDidYouHear[]" value="Social Media" class="form-checkbox">Social Media</label>
+                                        <label class="form-checkbox-label text-white"><input type="checkbox" name="howDidYouHear[]" value="Friend/Family" class="form-checkbox">Friend/Family</label>
+                                        <label class="form-checkbox-label text-white"><input type="checkbox" name="howDidYouHear[]" value="Other" class="form-checkbox" id="how-did-you-hear-other-checkbox">Other</label>
+                                        <input type="text" id="how-did-you-hear-other-input" name="howDidYouHearOther" class="form-input hidden flex-1 min-w-[150px]" placeholder="Specify other...">
+                                    </div>
+                                </section>
 
-                // Construct the prompt for the AI
-                const prompt = createAIprompt(state.formData);
-                console.log("Sending prompt to AI:", prompt);
+                                <div class="flex justify-center">
+                                    <button type="submit" class="bg-[#00d0cd] text-gray-900 px-8 py-4 rounded-full font-extrabold text-lg shadow-2xl hover:bg-opacity-80 transition-colors duration-300 transform hover:scale-105 active:scale-100">
+                                        Generate Itinerary
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    `;
+                    return htmlRenderer.renderModal('form-modal', 'Start Your Planning Journey', content, 'close-form');
+                },
 
-                // API call to the Gemini model
-                const chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
-                const payload = { contents: chatHistory };
-                const apiKey = ""; 
-                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
-
-                let retryCount = 0;
-                const maxRetries = 5;
-                const baseDelay = 1000;
-
-                while (retryCount < maxRetries) {
-                    try {
-                        const response = await fetch(apiUrl, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify(payload)
-                        });
-
-                        if (response.status === 429) {
-                            const delay = baseDelay * Math.pow(2, retryCount);
-                            console.log(`Rate limit hit. Retrying in ${delay}ms...`);
-                            await new Promise(res => setTimeout(res, delay));
-                            retryCount++;
-                            continue;
-                        }
-
-                        if (!response.ok) {
-                            throw new Error(`HTTP error! status: ${response.status}`);
-                        }
-
-                        const result = await response.json();
-
-                        if (result.candidates && result.candidates.length > 0 &&
-                            result.candidates[0].content && result.candidates[0].content.parts &&
-                            result.candidates[0].content.parts.length > 0) {
-                            const generatedText = result.candidates[0].content.parts[0].text;
-                            state.generatedItinerary = generatedText;
-                            state.isGenerating = false;
-                            state.showItineraryModal = true;
-                            state.formData = { ...state.initialFormData }; // Reset form data
-                            render();
-                            return;
-                        } else {
-                            throw new Error("Invalid response structure from API.");
-                        }
-
-                    } catch (error) {
-                        console.error('Error generating itinerary:', error);
-                        state.isGenerating = false;
-                        state.generatedItinerary = `Failed to generate an itinerary. Please check the console for errors and try again. Error: ${error.message}`;
-                        state.showItineraryModal = true;
-                        render();
-                        return;
-                    }
-                }
-                
-                // If max retries are reached
-                console.error('Max retries reached. Failed to fetch from API.');
-                state.isGenerating = false;
-                state.generatedItinerary = "Failed to generate an itinerary due to repeated API errors. Please try again later.";
-                state.showItineraryModal = true;
-                render();
-            };
-
-            // Simple Markdown parser for the generated itinerary
-            const marked = {
-                parse: function(markdownText) {
-                    // This is a very basic, custom markdown parser.
-                    let html = markdownText
-                        // Convert headings to h1, h2, h3
-                        .replace(/^### (.*$)/gim, '<h3>$1</h3>')
-                        .replace(/^## (.*$)/gim, '<h2>$1</h2>')
-                        .replace(/^# (.*$)/gim, '<h1>$1</h1>')
-                        // Convert bold text
-                        .replace(/\*\*(.*)\*\*/gim, '<strong>$1</strong>')
-                        // Convert bullet points to ul
-                        .replace(/^\* (.*$)/gim, '<li>$1</li>')
-                        // Convert to paragraphs for blocks of text
-                        .split('\n\n').map(p => {
-                            if (!p.startsWith('<h') && !p.startsWith('<li>')) {
-                                return `<p>${p.replace(/\n/g, '<br>')}</p>`;
+                renderItineraryModal: () => {
+                    const content = `
+                        <div class="markdown-content text-white">
+                            ${state.isGenerating
+                                ? `<div class="flex flex-col items-center justify-center p-8">
+                                     <div class="loader mb-4"></div>
+                                     <p class="text-xl font-semibold text-[#00d0cd]">Generating your personalized itinerary...</p>
+                                   </div>`
+                                : `
+                                    <h2 class="text-3xl font-extrabold text-center text-[#00d0cd] mb-6">Your Personalized Itinerary</h2>
+                                    ${htmlRenderer.renderMarkdown(state.generatedItinerary)}
+                                  `
                             }
-                            return p;
-                        }).join('');
+                        </div>
+                    `;
+                    return htmlRenderer.renderModal('itinerary-modal', 'Your Itinerary', content, 'close-itinerary');
+                },
 
-                    // Wrap list items in a ul tag
+                renderHeroAndCategories: () => {
+                    return `
+                        <!-- Hero Section -->
+                        <section class="text-center flex-grow flex flex-col justify-center items-center px-4 pt-20 pb-12 w-full">
+                            <h1 class="text-5xl md:text-7xl font-black text-white mb-4 drop-shadow-lg animate-fade-in-up"> Your Journey, Reimagined by AI </h1>
+                            <p class="text-xl md:text-2xl text-gray-200 max-w-3xl mx-auto drop-shadow-lg mb-8 animate-fade-in-up-delay-1"> Explore our hyper-personalized travel plans and itineraries. </p>
+                            <button id="start-planning-btn" class="bg-[#00d0cd] text-gray-900 px-8 py-4 rounded-full font-extrabold text-lg shadow-2xl hover:bg-opacity-80 transition-colors duration-300 transform hover:scale-105 active:scale-100 animate-fade-in-up-delay-2"> Personalize your trip </button>
+                        </section>
+                        <!-- Content Section - Categories -->
+                        <section id="category-section" class="w-full max-w-7xl px-4 py-16 transition-all duration-500 transform opacity-100 scale-100 bg-gray-900/60 text-white rounded-xl shadow-2xl mt-8">
+                            <h2 class="text-4xl font-bold text-center mb-12 text-white"> Our AI-Curated Plans </h2>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                                <div data-category="family" class="category-card p-6 rounded-xl shadow-lg bg-gray-800 text-center cursor-pointer hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 transform">
+                                    <img src="https://placehold.co/100x100/38a169/ffffff?text=Family" alt="Family Travel" class="rounded-full mb-4 mx-auto" />
+                                    <h3 class="text-2xl font-semibold">Family Travel</h3>
+                                    <p class="mt-2 text-gray-400">Perfect getaways for the whole family.</p>
+                                </div>
+                                <div data-category="solo" class="category-card p-6 rounded-xl shadow-lg bg-gray-800 text-center cursor-pointer hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 transform">
+                                    <img src="https://placehold.co/100x100/4c51bf/ffffff?text=Solo" alt="Solo Expeditions" class="rounded-full mb-4 mx-auto" />
+                                    <h3 class="text-2xl font-semibold">Solo Expeditions</h3>
+                                    <p class="mt-2 text-gray-400">Discover the world on your own terms.</p>
+                                </div>
+                                <div data-category="friends" class="category-card p-6 rounded-xl shadow-lg bg-gray-800 text-center cursor-pointer hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 transform">
+                                    <img src="https://placehold.co/100x100/dd6b20/ffffff?text=Friends" alt="Trips with Friends" class="rounded-full mb-4 mx-auto" />
+                                    <h3 class="text-2xl font-semibold">Trips with Friends</h3>
+                                    <p class="mt-2 text-gray-400">Adventure and memories with your crew.</p>
+                                </div>
+                            </div>
+                        </section>
+                    `;
+                },
+
+                renderSubsections: () => {
+                    const category = travelData[state.activeCategory];
+                    const subsections = Object.keys(category.subSections);
+
+                    return `
+                        <!-- Sub-category Header -->
+                        <div class="w-full max-w-7xl px-4 pt-16 pb-8 bg-gray-900/60 rounded-xl shadow-2xl mt-8 mb-8 text-white">
+                            <button id="back-to-categories" class="flex items-center text-[#00d0cd] font-semibold mb-6 hover:text-white transition-colors">
+                                <i class="fas fa-arrow-left mr-2"></i>
+                                Back to Categories
+                            </button>
+                            <h2 class="text-4xl font-bold text-center mb-6">${category.title}</h2>
+                            <div class="flex flex-wrap justify-center gap-4 mb-8">
+                                ${subsections.map(sub => `
+                                    <button class="sub-section-btn p-3 rounded-full text-center font-semibold transition-colors duration-300 ${state.activeSubSection === sub ? 'bg-[#00d0cd] text-gray-900' : 'bg-gray-700 text-white hover:bg-gray-600'}" data-subsection="${sub}">
+                                        ${sub.charAt(0).toUpperCase() + sub.slice(1)}
+                                    </button>
+                                `).join('')}
+                            </div>
+
+                            <div class="text-center">
+                                <button id="start-planning-btn-subsection" class="bg-[#00d0cd] text-gray-900 px-8 py-4 rounded-full font-extrabold text-lg shadow-2xl hover:bg-opacity-80 transition-colors duration-300 transform hover:scale-105 active:scale-100">
+                                    Personalize your trip
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Trip Cards -->
+                        <section class="w-full max-w-7xl px-4 pb-16">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                                ${state.activeSubSection
+                                    ? category.subSections[state.activeSubSection].map(trip => `
+                                        <a href="${trip.link}" class="bg-gray-800 rounded-xl shadow-lg overflow-hidden block hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 transform">
+                                            <img src="${trip.image}" alt="${trip.title}" class="w-full h-48 object-cover">
+                                            <div class="p-6">
+                                                <h3 class="text-xl font-semibold text-white">${trip.title}</h3>
+                                            </div>
+                                        </a>
+                                    `).join('')
+                                    : ''
+                                }
+                            </div>
+                        </section>
+                    `;
+                },
+
+                // Simple Markdown renderer for the itinerary
+                renderMarkdown: (markdown) => {
+                    if (!markdown) return '';
+                    let html = markdown
+                        .replace(/### (.*)/g, '<h3>$1</h3>')
+                        .replace(/## (.*)/g, '<h2>$1</h2>')
+                        .replace(/# (.*)/g, '<h1>$1</h1>')
+                        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                        .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                        .replace(/- (.*)/g, '<li>$1</li>');
+
+                    // Wrap in ul tag
                     if (html.includes('<li>')) {
                         html = `<ul>${html}</ul>`;
                     }
@@ -903,37 +960,166 @@
                     return html;
                 }
             };
-            
-            // --- Event Listeners and Initial Render ---
 
-            // Main nav links
-            document.querySelectorAll('header nav a, header nav button').forEach(el => {
-                el.addEventListener('click', (e) => {
-                    if (e.target.dataset.action === 'home') {
+            // Main rendering function that determines what to show
+            const render = () => {
+                // Clear the main content and modal container
+                mainContent.innerHTML = '';
+                modalContainer.innerHTML = '';
+
+                if (state.activeCategory) {
+                    mainContent.innerHTML = htmlRenderer.renderSubsections();
+                } else {
+                    mainContent.innerHTML = htmlRenderer.renderHeroAndCategories();
+                }
+
+                // Render active modals
+                if (state.showFormModal) {
+                    modalContainer.innerHTML += htmlRenderer.renderFormModal();
+                }
+                if (state.showAboutModal) {
+                    modalContainer.innerHTML += htmlRenderer.renderAboutModal();
+                }
+                if (state.showContactModal) {
+                    modalContainer.innerHTML += htmlRenderer.renderContactModal();
+                }
+                if (state.showItineraryModal) {
+                    modalContainer.innerHTML += htmlRenderer.renderItineraryModal();
+                }
+
+                // --- Re-attach event listeners after each render ---
+                attachEventListeners();
+            };
+
+            const attachEventListeners = () => {
+                // Main nav links
+                document.querySelectorAll('header nav a, header nav button').forEach(el => {
+                    el.addEventListener('click', (e) => {
+                        if (e.target.dataset.action === 'home') {
+                            state.activeCategory = null;
+                            state.activeSubSection = null;
+                            render();
+                        } else if (e.target.dataset.modal) {
+                            const modalName = e.target.dataset.modal;
+                            state.showFormModal = false;
+                            state.showAboutModal = false;
+                            state.showContactModal = false;
+                            state.showItineraryModal = false;
+                            state[`show${modalName.charAt(0).toUpperCase() + modalName.slice(1)}Modal`] = true;
+                            render();
+                        }
+                    });
+                });
+
+                // Mobile menu button
+                const menuBtn = document.getElementById('menu-btn');
+                const mobileMenu = document.getElementById('mobile-menu');
+                if (menuBtn) {
+                    menuBtn.addEventListener('click', () => {
+                        mobileMenu.classList.toggle('hidden');
+                    });
+                }
+
+                // Close modal buttons
+                document.querySelectorAll('[data-action^="close-"]').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const modalToClose = e.target.closest('[data-action]').dataset.action.replace('close-', '');
+                        const modalName = `show${modalToClose.charAt(0).toUpperCase() + modalToClose.slice(1)}Modal`;
+                        state[modalName] = false;
+                        render();
+                    });
+                });
+
+                // About modal navigation
+                document.querySelectorAll('.about-nav-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        state.aboutSection = e.target.dataset.section;
+                        render();
+                    });
+                });
+
+                // Start Planning button
+                const startPlanningBtn = document.getElementById('start-planning-btn');
+                if (startPlanningBtn) {
+                    startPlanningBtn.addEventListener('click', () => {
+                        state.showFormModal = true;
+                        render();
+                    });
+                }
+
+                const startPlanningBtnSubsection = document.getElementById('start-planning-btn-subsection');
+                if (startPlanningBtnSubsection) {
+                    startPlanningBtnSubsection.addEventListener('click', () => {
+                        state.showFormModal = true;
+                        render();
+                    });
+                }
+
+                // Category card click listeners
+                document.querySelectorAll('.category-card').forEach(card => {
+                    card.addEventListener('click', (e) => {
+                        const category = e.currentTarget.dataset.category;
+                        state.activeCategory = category;
+                        state.activeSubSection = Object.keys(travelData[category].subSections)[0]; // Set default sub-section
+                        render();
+                    });
+                });
+
+                // Sub-section button click listeners
+                document.querySelectorAll('.sub-section-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        state.activeSubSection = e.currentTarget.dataset.subsection;
+                        render();
+                    });
+                });
+
+                // Back to categories button
+                const backToCategoriesBtn = document.getElementById('back-to-categories');
+                if (backToCategoriesBtn) {
+                    backToCategoriesBtn.addEventListener('click', () => {
                         state.activeCategory = null;
                         state.activeSubSection = null;
                         render();
-                    } else if (e.target.dataset.modal) {
-                        const modalName = e.target.dataset.modal;
-                        state.showFormModal = false;
-                        state.showAboutModal = false;
-                        state.showContactModal = false;
-                        state.showItineraryModal = false;
-                        state[`show${modalName.charAt(0).toUpperCase() + modalName.slice(1)}Modal`] = true;
-                        render();
-                    }
-                });
-            });
+                    });
+                }
 
-            // Mobile menu button
-            menuBtn.addEventListener('click', () => {
-                mobileMenu.classList.toggle('hidden');
-            });
-            
+                // Handle form submission
+                const tripForm = document.getElementById('trip-form');
+                if (tripForm) {
+                    tripForm.addEventListener('submit', handleFormSubmit);
+                }
+
+                // Handle "Other" checkbox for travelingWith
+                const travelingWithOtherCheckbox = document.getElementById('traveling-with-other-checkbox');
+                const travelingWithOtherInput = document.getElementById('traveling-with-other-input');
+                if (travelingWithOtherCheckbox && travelingWithOtherInput) {
+                    travelingWithOtherCheckbox.addEventListener('change', () => {
+                        travelingWithOtherInput.classList.toggle('hidden', !travelingWithOtherCheckbox.checked);
+                    });
+                }
+                
+                // Handle "Other" checkbox for primaryInterests
+                const primaryInterestsOtherCheckbox = document.getElementById('primary-interests-other-checkbox');
+                const primaryInterestsOtherInput = document.getElementById('primary-interests-other-input');
+                if (primaryInterestsOtherCheckbox && primaryInterestsOtherInput) {
+                    primaryInterestsOtherCheckbox.addEventListener('change', () => {
+                        primaryInterestsOtherInput.classList.toggle('hidden', !primaryInterestsOtherCheckbox.checked);
+                    });
+                }
+
+                // Handle "Other" checkbox for howDidYouHear
+                const howDidYouHearOtherCheckbox = document.getElementById('how-did-you-hear-other-checkbox');
+                const howDidYouHearOtherInput = document.getElementById('how-did-you-hear-other-input');
+                if (howDidYouHearOtherCheckbox && howDidYouHearOtherInput) {
+                    howDidYouHearOtherCheckbox.addEventListener('change', () => {
+                        howDidYouHearOtherInput.classList.toggle('hidden', !howDidYouHearOtherCheckbox.checked);
+                    });
+                }
+            };
+
             // Initial render
             render();
         });
     </script>
 </body>
 </html>
-
